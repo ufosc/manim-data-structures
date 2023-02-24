@@ -1,79 +1,40 @@
-<picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/drageelr/manim-data-structures/main/docs/source/_static/logo-white-no-bg.svg">
-    <img alt="Light Mode Logo" src="https://raw.githubusercontent.com/drageelr/manim-data-structures/main/docs/source/_static/logo-color-no-bg.svg">
-</picture>
-<br />
-<br />
-<p align="center">
-    <a href="https://pypi.org/project/manim-data-structures/"><img src="https://img.shields.io/pypi/v/manim-data-structures.svg?style=plastic&logo=pypi" alt="PyPI Latest Release"></a>
-    <a href="http://choosealicense.com/licenses/mit/"><img src="https://img.shields.io/badge/license-MIT-red.svg?style=plastic" alt="MIT License"></a>
-    <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg?style=plastic" alt="Code style: black">
-    <a href="https://manim-data-structures.readthedocs.io/en/latest/"><img src="https://readthedocs.org/projects/manim-data-structures/badge/?version=latest&style=plastic" alt="Documentation Status"></a>
-    <a href="https://pepy.tech/project/manim-data-structures"><img src="https://pepy.tech/badge/manim-data-structures/month?style=plastic" alt="Downloads"> </a>
-    <a href=""><img src="https://github.com/drageelr/manim-data-structures/actions/workflows/publish-package.yml/badge.svg?style=plastic&branch=main"></a>
-    <br />
-    <br />
-    <i>A plugin that contains common data structures to create Manimations.</i>
-</p>
+# Manim Data Structures
+This repository is a fork of [manim-data-structures](https://github.com/drageelr/manim-data-structures). The code should be used as a reference for we're going for, but we are aiming to make the animation interface for our objects a little more fluid.
 
-## Installation
-To install, simply run the following command:
-```
-pip install manim-data-structures
-```
+## Background
+Manim is a library for math animation written by Grant Sanderson (3b1b) to create videos for his [YouTube channel](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiwmZ7-1az9AhWfQjABHR0aAFsQtwJ6BAgLEAE&url=https%3A%2F%2Fm.youtube.com%2Fc%2F3blue1brown&usg=AOvVaw1S8JSB2H-8tYFl1lqqZxdb). The open source community adopted his project and began developing the [community version of Manim](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjq-rX41qz9AhVaTTABHWnSCEIQFnoECAkQAQ&url=https%3A%2F%2Fwww.manim.community%2F&usg=AOvVaw0TyF2Amnk2xgbI5hRRBDsJ). What Manim provides is a set of Mobjects (mathematical objects) that can be instantiated and manipulated programatically as well as a rendering engine that can be called to convert the manipulations into videos.
 
-## Importing
-Simply use the following line of code to import the package:
-```python
-from manim_data_structures import *
-```
+## Motivation
+We are aiming to create Mobjects that implement common structures from computer science. For example similarly to how Manim provides a Plane Mobject we will provide a Variable Mobject that can hold an Mobject. Then we can build up more complex Mobjects such as arrays, pointers, linked lists, etc. These Mobjects will be able to be manipulated and animated in the same way as the Mobjects provided by Manim, thus allowing for the creation of videos that demonstrate the use of these data structures with very little additional effort.
 
-## Usage
-### Code
-```python
-class MainScene(Scene):
-    def construct(self):
-        # Create an array
-        arr = MArray([8, 7, 6, 5, 4])
-        self.play(Create(arr))
+## Goals
+The goal is to produce a [Manim Plugin](https://www.manim.community/en/stable/plugins.html) that can be installed and used by the community. The plugin will provide a set of Mobjects that can be used to create animations of common data structures. The plugin will also provide a set of animations that can be used to manipulate the Mobjects in a way that is consistent with the way the Mobjects are used in the real world. For example, when a variable is assigned a value, the value is copied into the variable.
 
-        # Animate array
-        self.play(arr.animate.shift(UP * 2.5 + LEFT * 5))
+### Mobjects
+#### TODO
+- [ ] Variable
+- [ ] Pointer
+- [ ] Array
+- [ ] List
+- [ ] Stack
+- [ ] Queue
+- [ ] Set
+- [ ] Map
+- [ ] Linked List
+- [ ] Nary-Tree
+    - [ ] B-Trees
+    - [ ] Heap
 
-        # Animate array element
-        self.play(arr.animate_elem(3).shift(DOWN * 0.5))
-
-        # Animate array element mobjects
-        self.play(arr.animate_elem_square(0).set_fill(BLACK), arr.animate_elem_value(0).rotate(PI / 2).set_fill(RED), arr.animate_elem_index(0).rotate(PI / 2))
-
-        # Display array with hex values
-        arr2 = MArray([0, 2, 4, 6, 8], index_hex_display=True, index_offset=4)
-        self.play(Create(arr2))
-        self.play(arr2.animate.shift(DOWN * 2.5 + LEFT * 5))
-
-        # Create customized array
-        arr3 = MArray([1, 1, 2], mob_square_args={'color': GRAY_A, 'fill_color': RED_E, 'side_length': 0.5}, mob_value_args={'color': GOLD_A, 'font_size': 28}, mob_index_args={'color': RED_E, 'font_size': 22})
-        self.play(Create(arr3))
-
-        # Append element
-        self.play(Write(arr2.append_elem(10)))
-
-        # Append customized element
-        self.play(Write(arr2.append_elem(12, mob_square_args={'fill_color': BLACK})))
-
-        # Update value of element
-        self.play(Write(arr2.update_elem_value(3, 0, mob_value_args={'color': RED})), arr2.animate_elem_square(3).set_fill(WHITE))
-
-        self.wait()
-```
-
-### Output
+#### Reach Goals
+- [ ] Graph
+    - [ ] Directed Graph
+    - [ ] Undirected Graph
+    - [ ] Weighted Graph
+    - [ ] Directed Weighted Graph
+    - [ ] Undirected Weighted Graph
+- [ ] Trie
 
 
-https://user-images.githubusercontent.com/56049229/203757924-6f3aed6d-e870-468f-a269-a572350355b1.mp4
 
-
-## Other Links
-
-- [Official Documentation](https://manim-data-structures.readthedocs.io/en/latest/)
-- [Changelog](https://github.com/drageelr/manim-data-structures/blob/main/CHANGELOG.md)
+## Resources Links
+- [Official Manim Community Documentation](https://docs.manim.community/en/stable/)
