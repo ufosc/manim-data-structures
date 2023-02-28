@@ -40,7 +40,7 @@ For information on how to contribute to this project, please see [CONTRIBUTING.m
 ## Resources Links
 - [Getting Started](https://docs.manim.community/en/stable/installation.html)
 - [Official Manim Community Documentation](https://docs.manim.community/en/stable/)
-- [Official Manim Community GitHub](htyps://github.com/ManimCommunity/manim)
+- [Official Manim Community GitHub](https://github.com/ManimCommunity/manim)
 - [Official Manim Plugin Documentation](https://docs.manim.community/en/stable/plugins.html#creating-plugins)
 - [Manim Animation Guidelines](https://docs.manim.community/en/stable/reference_index/animations.html)
 - [3b1b Manim Structure (potentially different) from community version)](https://3b1b.github.io/manim/getting_started/structure.html#manim-execution-process)
