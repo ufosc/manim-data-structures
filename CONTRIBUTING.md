@@ -1,6 +1,23 @@
 # Contributing Guidelines
+The general workflow for contributing to this project is as follows:
+1. Create a new branch for your contribution.
+2. Make sure to `git pull upstream main`
+2. Make your changes.
+3. Update the documentation if necessary.
+4. Push your changes to your fork.
+5. Submit a pull request through [GitHub](https://github.com/ufosc/manim-data-structures/pulls).
 
 ## Setup
+To interact with the project, you will need to install some dependencies and configure git.
+
+1. [Install git](https://git-scm.com/)
+2. [Install manim](https://docs.manim.community/en/stable/installation.html)
+3. [Install Poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer)
+4. Fork the [project](https://github.com/ufosc/manim-data-structures).
+5. Clone your fork `git clone <my-fork-url>.
+6. Add the upstream repository. `git remote add upstream https://github.com/ufosc/manim-data-structures/`
+7. Install Pre-Commit:
+`poetry run pre-commit install`
 
 ### Install git
 For instructions see https://git-scm.com/.
@@ -43,6 +60,6 @@ git push origin dev
 Once you have finalized your contribution, navigate to this [link](https://github.com/ufosc/manim-data-structures/pulls) to create a new pull request and submit it.
 
 ### Closing note
-Once your PR is approved, it will be merged into the `dev` branch and eventually your contribution will make it through to the next release.
+Once your PR is approved, it will be merged into the `dev` branch and we are looking at eventually merging upstream.
 
 Thanks for contributing 😁!
