@@ -1,12 +1,12 @@
 [tool.poetry]
 name = "manim-data-structures"
 version = "0.1.7"
-description = "A Manim implementation for data structures"
-authors = ["Hammad Nasir <hammadn99@gmail.com>"]
+description = "A Manim implementation of Data Structures"
+authors = ["Nikhil Iyer <iyer.h.nikhil@gmail.com>", "Hammad Nasir <hammadn99@gmail.com>"]
 readme = "README.md"
 packages = [{include = "manim_data_structures", from = "src"}]
-repository = "https://github.com/drageelr/manim-data-structures"
-documentation = "https://manim-data-structures.readthedocs.io/en/latest/"
+repository = "https://github.com/ufosc/manim-data-structures"
+documentation = ""
 
 [tool.poetry.dependencies]
 python = ">=3.7,<3.11"
@@ -41,8 +41,8 @@ ensure_newline_before_comments = true
 line_length = 88
 
 [tool.poetry.urls]
-"Bug Tracker" = "https://github.com/drageelr/manim-data-structures/issues"
-"Changelog" = "https://github.com/drageelr/manim-data-structures/blob/main/CHANGELOG.md"
+"Bug Tracker" = "https://github.com/ufosc/manim-data-structures/issues"
+"Changelog" = "https://github.com/ufosc/manim-data-structures/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["poetry-core"]
