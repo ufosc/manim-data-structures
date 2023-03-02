@@ -11,7 +11,7 @@ The general workflow for contributing to this project is as follows:
 To interact with the project, you will need to install some dependencies and configure git.
 
 1. [Install git](https://git-scm.com/)
-2. [Install manim](https://docs.manim.community/en/stable/installation.html)
+2. [Install Manim dependencies](https://docs.manim.community/en/stable/installation.html) Note: You do not need to install Manim itself (Poetry will handle that).
 3. [Install Poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer)
 4. Fork the [project](https://github.com/ufosc/manim-data-structures).
 5. Clone your fork `git clone <my-fork-url>.
