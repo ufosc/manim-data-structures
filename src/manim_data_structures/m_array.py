@@ -2269,6 +2269,11 @@ class MArraySlidingWindow(VGroup):
         for k, v in self.__dict__.items():
             if k not in exclude_list:
                 setattr(result, k, deepcopy(v, memo))
+
+        # Shallow copy the excluded attributes
+        for k in exclude_list:
+            setattr(result, k, getattr(self, k))
+
         return result
 
     def __init__(
@@ -2470,23 +2475,19 @@ class MArraySlidingWindow(VGroup):
         self.__init_pos()
 
     def resize_window(
-        self, size: int, play_anim: bool = True, play_anim_args: dict = {}
-    ) -> ApplyFunction:
+        self,
+        size: int,
+    ):
         """Expands or shrinks the window according to the specified size.
 
         Parameters
         ----------
         size
             Specifies the number of elements the sliding window should enclose.
-        play_anim
-            If `True`, plays the animation(s).
-        play_anim_args
-            Arguments for :py:meth:`Scene.play() <manim.scene.scene.Scene.play>`.
 
         Returns
         -------
-        :class:`~manim.animation.transform.ApplyFunction`
-            Resize animation.
+            self
         """
 
         if size < 1 or self.__index + size > len(self.__arr.fetch_mob_arr()):
@@ -2500,28 +2501,11 @@ class MArraySlidingWindow(VGroup):
         window_pos_np, window_align_np = self.__calc_window_pos_np()
         label_pos_np = self.__calc_label_pos_np()
 
-        def resize_and_shift(mob: MArraySlidingWindow) -> MArraySlidingWindow:
-            """Resizes and shifts the sliding window
+        if arr_dir in (MArrayDirection.UP, MArrayDirection.DOWN):
+            self.__mob_window.stretch_to_fit_height(height)
+        else:
+            self.__mob_window.stretch_to_fit_width(width)
+        self.__mob_window.move_to(window_pos_np, window_align_np)
+        self.__mob_label.next_to(self.__mob_window, label_pos_np, self.__label_gap)
 
-            Returns
-            -------
-            :class:`MArraySlidingWindow`
-                Represents the modified mobject.
-            """
-
-            if arr_dir in (MArrayDirection.UP, MArrayDirection.DOWN):
-                mob.__mob_window.stretch_to_fit_height(height)
-            else:
-                mob.__mob_window.stretch_to_fit_width(width)
-            mob.__mob_window.move_to(window_pos_np, window_align_np)
-            mob.__mob_label.next_to(mob.__mob_window, label_pos_np, mob.__label_gap)
-            return mob
-
-        resize_anim = ApplyFunction(
-            resize_and_shift, self, suspend_mobject_updating=True
-        )
-
-        if play_anim:
-            self.__scene.play(resize_anim, **play_anim_args)
-
-        return resize_anim
+        return self
