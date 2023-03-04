@@ -1,4 +1,5 @@
 """Contains classes to construct an array."""
+from __future__ import annotations
 
 from copy import deepcopy
 
@@ -220,7 +221,7 @@ class MArrayElement(VGroup):
         label_gap: float = 0.5,
         next_to_mob: "MArrayElement" = None,
         next_to_dir: np.ndarray = RIGHT,
-        **kwargs
+        **kwargs,
     ) -> None:
         """Initializes the class.
 
@@ -901,7 +902,7 @@ class MArray(VGroup):
                 anims_index.append(
                     update_anim(
                         (self.__mob_arr[i].fetch_mob(update_anim_target)),
-                        **update_anim_args
+                        **update_anim_args,
                     )
                 )
 
@@ -1052,7 +1053,7 @@ class MArray(VGroup):
         mob_square_args: dict = {},
         mob_value_args: dict = {},
         mob_index_args: dict = {},
-        **kwargs
+        **kwargs,
     ) -> None:
         """Initializes the class.
 
@@ -1727,7 +1728,7 @@ class MArrayPointer(VGroup):
             self.__mob_arrow = Arrow(
                 start=(-arrow_pos_np + (arrow_pos_np * self.__arrow_len)),
                 end=-arrow_pos_np,
-                **self.__mob_arrow_props
+                **self.__mob_arrow_props,
             )
             self.__mob_arrow.next_to(
                 self.__arr.fetch_mob_arr()[self.__index].fetch_mob_square(),
@@ -1780,7 +1781,7 @@ class MArrayPointer(VGroup):
         pointer_pos: MArrayDirection = MArrayDirection.DOWN,
         mob_arrow_args: dict = {},
         mob_label_args: dict = {},
-        **kwargs
+        **kwargs,
     ) -> None:
         """Initializes the class.
 
@@ -2287,7 +2288,7 @@ class MArraySlidingWindow(VGroup):
         label_pos: MArrayDirection = MArrayDirection.DOWN,
         mob_window_args: dict = {},
         mob_label_args: dict = {},
-        **kwargs
+        **kwargs,
     ) -> None:
         """Initializes the class.
 
@@ -2427,9 +2428,7 @@ class MArraySlidingWindow(VGroup):
 
         return self.__mob_label.animate
 
-    def shift_to_elem(
-        self, index: int, play_anim: bool = True, play_anim_args: dict = {}
-    ) -> ApplyFunction:
+    def shift_to_elem(self, index: int) -> MArraySlidingWindow:
         """Shifts sliding window to the specified element.
 
         Parameters
@@ -2443,8 +2442,7 @@ class MArraySlidingWindow(VGroup):
 
         Returns
         -------
-        :class:`~manim.animation.transform.ApplyFunction`
-            Shift animation.
+        self
         """
 
         if index >= len(self.__arr.fetch_mob_arr()) or index < 0:
@@ -2454,15 +2452,19 @@ class MArraySlidingWindow(VGroup):
             raise Exception("Invalid window size!")
 
         self.__index = index
-        return self.resize_window(self.__size, play_anim, play_anim_args)
+        return self.resize_window(self.__size)
 
-    def attach_to_elem(self, index: int) -> None:
-        """Attaches pointer to the specified element.
+    def attach_to_elem(self, index: int) -> MArraySlidingWindow:
+        """Attaches the window to the specified element.
 
         Parameters
         ----------
         index
             Specifies the index of the element to which the sliding window is to be attached.
+
+        Returns
+        -------
+        self
         """
 
         if index >= len(self.__arr.fetch_mob_arr()) or index < 0:
@@ -2473,11 +2475,12 @@ class MArraySlidingWindow(VGroup):
 
         self.__index = index
         self.__init_pos()
+        return self
 
     def resize_window(
         self,
         size: int,
-    ):
+    ) -> MArraySlidingWindow:
         """Expands or shrinks the window according to the specified size.
 
         Parameters
@@ -2487,7 +2490,7 @@ class MArraySlidingWindow(VGroup):
 
         Returns
         -------
-            self
+        self
         """
 
         if size < 1 or self.__index + size > len(self.__arr.fetch_mob_arr()):
