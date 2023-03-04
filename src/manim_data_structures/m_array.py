@@ -5,9 +5,11 @@ from copy import deepcopy
 import numpy as np
 from manim import *
 
+from . import utils
 from .m_enum import MArrayDirection, MArrayElementComp
 
 
+@utils.exclude_from_deepcopy("_MArrayElement__scene")
 class MArrayElement(VGroup):
     """A class that represents an array element.
 
@@ -193,19 +195,6 @@ class MArrayElement(VGroup):
                 self.__mob_square, self.__label_pos, self.__label_gap
             )
             self.add(self.__mob_label)
-
-    def __deepcopy__(self, memo):
-        """Deepcopy that excludes attributes specified in `exclude_list`."""
-
-        exclude_list = ["_MArrayElement__scene"]
-
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            if k not in exclude_list:
-                setattr(result, k, deepcopy(v, memo))
-        return result
 
     def __init__(
         self,
@@ -524,6 +513,7 @@ class MArrayElement(VGroup):
         return self.__mob_label.animate
 
 
+@utils.exclude_from_deepcopy("_MArray__scene")
 class MArray(VGroup):
     """A class that represents an array.
 
@@ -1022,19 +1012,6 @@ class MArray(VGroup):
                     )
             self.add(self.__mob_arr_label)
 
-    def __deepcopy__(self, memo):
-        """Deepcopy that excludes attributes specified in `exclude_list`."""
-
-        exclude_list = ["_MArray__scene"]
-
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            if k not in exclude_list:
-                setattr(result, k, deepcopy(v, memo))
-        return result
-
     def __init__(
         self,
         scene: Scene,
@@ -1507,6 +1484,7 @@ class MArray(VGroup):
         return (remove_anim, update_indices)
 
 
+@utils.exclude_from_deepcopy("_MArrayPointer__scene", "_MArrayPointer__arr")
 class MArrayPointer(VGroup):
     """A class that represents a pointer.
 
@@ -1755,19 +1733,6 @@ class MArrayPointer(VGroup):
             self.__arrow_gap,
         )
 
-    def __deepcopy__(self, memo):
-        """Deepcopy that excludes attributes specified in `exclude_list`."""
-
-        exclude_list = ["_MArrayPointer__scene", "_MArrayPointer__arr"]
-
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            if k not in exclude_list:
-                setattr(result, k, deepcopy(v, memo))
-        return result
-
     def __init__(
         self,
         scene: Scene,
@@ -1984,6 +1949,7 @@ class MArrayPointer(VGroup):
         self.__init_pos()
 
 
+@utils.exclude_from_deepcopy("_MArraySlidingWindow__scene", "_MArraySlidingWindow__arr")
 class MArraySlidingWindow(VGroup):
     """A class that represents a sliding window
 
@@ -2257,19 +2223,6 @@ class MArraySlidingWindow(VGroup):
         """Initializes the position of the object"""
 
         self.__pos_mobs(True, True)
-
-    def __deepcopy__(self, memo):
-        """Deepcopy that excludes attributes specified in `exclude_list`."""
-
-        exclude_list = ["_MArraySlidingWindow__scene", "_MArraySlidingWindow__arr"]
-
-        cls = self.__class__
-        result = cls.__new__(cls)
-        memo[id(self)] = result
-        for k, v in self.__dict__.items():
-            if k not in exclude_list:
-                setattr(result, k, deepcopy(v, memo))
-        return result
 
     def __init__(
         self,
