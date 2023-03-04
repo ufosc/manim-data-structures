@@ -11,6 +11,7 @@ documentation = ""
 [tool.poetry.dependencies]
 python = ">=3.8.0,<3.11"
 manim = ">=0.16.0"
+pytest-cov = "^4.0.0"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.3.0"
