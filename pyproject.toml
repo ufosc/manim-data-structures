@@ -11,7 +11,6 @@ documentation = ""
 [tool.poetry.dependencies]
 python = ">=3.8.0,<3.11"
 manim = ">=0.16.0"
-pytest-cov = "^4.0.0"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.3.0"
@@ -26,12 +25,19 @@ flake8-rst-docstrings = "^0.3.0"
 flake8-simplify = "^0.19.3"
 flake8-comprehensions = "^3.10.1"
 pytest = "^6.2.5"
+pytest-cov = "^4.0.0"
+
+
 
 [tool.poetry.dev-dependencies.black]
 version = ">=22.10.0"
 allow-prereleases = false
 python = ">=3.7"
 markers = "platform_python_implementation == 'CPython'"
+
+
+[tool.poetry.group.dev-dependencies.dependencies]
+sphinx-autodoc-typehints = "^1.22"
 
 [tool.isort]
 # from https://black.readthedocs.io/en/stable/compatible_configs.html
