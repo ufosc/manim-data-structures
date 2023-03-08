@@ -3,6 +3,7 @@ __version__ = "0.1.7"
 from .m_array import *
 from .m_enum import *
 from .m_variable import *
+from .mlinearcollection import *
 
 __all__ = [
     "MArrayElement",
@@ -12,4 +13,5 @@ __all__ = [
     "MArrayDirection",
     "MArrayElementComp",
     "MVariable",
+    "LinearCollection",
 ]
