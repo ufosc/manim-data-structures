@@ -1,16 +1,23 @@
+from __future__ import annotations
+
 import copy
-from typing import Iterable, List
+from typing import Any, Callable, Iterable, List, SupportsIndex, Union
 
 import numpy as np
-from manim import RIGHT, Integer, Mobject, Square, VMobject
+from manim import ORIGIN, RIGHT, Integer, Mobject, Square, VMobject
 
 
 class LinearCollection(VMobject):
-    __data: List[Mobject]
-    __data_template: Mobject
-    __container_template: Mobject
+    """
+    A drop-in replacement for a Python list that supports animating operations.
+    """
+
+    __datas: List[Mobject]
+    __containers: List[Mobject]
+    __data_template: Callable[[Any], Mobject]
+    __container_template: Callable[[], Mobject]
     __delimiter: Mobject
-    __direction: np.ndarray
+    __arrangement: dict
 
     def __init__(
         self,
@@ -18,45 +25,141 @@ class LinearCollection(VMobject):
         data_template=Integer,
         container_template=Square,
         delimiter=None,
-        direction=RIGHT,
+        arrangement={"direction": RIGHT, "buff": 0.0},
         *args,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
 
-        self.__data = []
+        self.__datas = []
+        self.__containers = []
         self.__data_template = data_template
-        self.__container_template = container_template
+        self.__container_template = lambda data: container_template().add(
+            data.move_to(ORIGIN)
+        )
         self.__delimiter = delimiter
-        self.__direction = direction
+        self.__arrangement = arrangement
 
         for value in data:
-            self.__data.append(data_template(value))
-            new_container = container_template()
-            new_container.add(self.__data[-1])
-            self.add(new_container)
+            self.insert(value)
 
-        self.arrange(direction=self.__direction)
+        self.updaters.append(LinearCollection.__update)
 
-    def insert(self, value):
-        self.__data.append(self.__data_template(value))
-        new_container = self.__container_template()
-        new_container.add(self.__data[-1])
-        self.add(new_container)
-        self.arrange(direction=self.__direction)
+    @classmethod
+    def __update(cls, mobject, dt=0):
+        # Only rearrange if we need to
+        if mobject.__rearrange:
+            mobject.arrange(**mobject.__arrangement)
+            mobject.__rearrange = False
 
-    def remove(self):
+    # Python list style methods
+    def append(self, value: Any) -> LinearCollection:
+        return self.insert(0, value)
+
+    def extend(self, values: Iterable) -> LinearCollection:
+        for value in values:
+            self.append(value)
+
+    def insert(self, index, value) -> LinearCollection:
+        self.__datas.insert(index, self.__data_template(value))
+        self.__containers.insert(index, self.__container_template(self.__datas[index]))
+        if self.__delimiter is not None:
+            super().insert(index, self.__delimiter.copy())
+        super().insert(index, self.__containers[-1])
+
+        # Flag for rearrangement
+        self.__rearrange = True
+        return self
+
+    def remove(self, value: Any) -> LinearCollection:
+        # TODO #
+        self.__rearrange = True
+        return self
+
+    def pop(self, index=-1) -> Any:
+        # TODO #
+        self.__rearrange = True
         pass
 
-    def __getitem__(self, key):
-        return self.__data.__getitem__(key).get_value()
+    def clear(self) -> LinearCollection:
+        self.__datas.clear()
+        self.__containers.clear()
+        self.submobjects.clear()
+        self.__rearrange = True
+        return self
 
-    def __setitem__(self, key, value):
-        return self.__data.__getitem__(key).set_value(value)
+    def index(self, value: Any, start=0, end=None) -> int:
+        # TODO #
+        pass
+
+    def count(self, value: Any) -> int:
+        # TODO #
+        pass
+
+    def sort(self, key=None, reverse=False) -> LinearCollection:
+        # TODO #
+        self.__rearrange = True
+        return self
+
+    def reverse(self) -> LinearCollection:
+        # TODO #
+        self.__rearrange = True
+        return self
+
+    # Comparison Operators
+    def __lt__(self, rhs):
+        for lhs_data, rhs_data in zip(self, rhs):
+            if lhs_data != rhs_data:
+                return lhs_data < rhs_data
+        return len(self) < len(rhs)
+
+    def __le__(self, rhs):
+        for lhs_data, rhs_data in zip(self, rhs):
+            if lhs_data != rhs_data:
+                return lhs_data < rhs_data
+        return len(self) <= len(rhs)
+
+    def __eq__(self, rhs):
+        if type(rhs) != LinearCollection or len(self) != len(rhs):
+            return False
+        return all(lhs_data == rhs_data for lhs_data, rhs_data in zip(self, rhs))
+
+    def __ne__(self, rhs: LinearCollection):
+        return not self.__eq__(rhs)
+
+    def __gt__(self, rhs: Union[Iterable, LinearCollection]):
+        for lhs_data, rhs_data in zip(self, rhs):
+            if lhs_data != rhs_data:
+                return lhs_data > rhs_data
+        return len(self) > len(rhs)
+
+    def __ge__(self, rhs: LinearCollection):
+        for lhs_data, rhs_data in zip(self, rhs):
+            if lhs_data != rhs_data:
+                return lhs_data > rhs_data
+        return len(self) >= len(rhs)
+
+    # Iteration and indexing proxy to the values of __datas
+    def __len__(self) -> int:
+        return self.__datas.__len___()
+
+    def __getitem__(self, key: SupportsIndex) -> Any:
+        # TODO support slicing #
+        return self.__datas.__getitem__(key).get_value()
+
+    def __setitem__(self, key: SupportsIndex, value: Any) -> None:
+        # TODO support slicing #
+        return self.__datas.__getitem__(key).set_value(value)
+
+    def __delitem__(self, key: SupportsIndex) -> None:
+        # TODO support slicing #
+        self.__datas.__delitem__(key)
+        self.__containers.__delitem__(key)
+        self.__rearrange = True
 
     def __iter__(self):
         # Initialize a Data iterator when we start iterating
-        self.__iter__data = iter(self.__data)
+        self.__iter__data = iter(self.__datas)
         return self
 
     def __next__(self):
@@ -68,11 +171,49 @@ class LinearCollection(VMobject):
             del self.__iter__data
             raise e
 
-    def __add__(self, rhs):
-        self_copy = copy.copy(self)
-        for container in rhs.submobjects:
-            self_copy.add(copy.copy(container))
-        for data in rhs._LinearCollection__data:
-            self_copy.__data.append(copy.copy(data))
+    # Concatenation
+    def __iadd__(self, rhs: Union[Iterable, LinearCollection]):
+        if isinstance(rhs, LinearCollection):
+            raise NotImplementedError(
+                "unsupported operand type(s) for +: 'LinearCollection' and '{}'".format(
+                    type(rhs)
+                )
+            )
 
+        for container in rhs.submobjects:
+            container_copy = copy.copy(container)
+            self.__datas.append(container_copy.submobjects[0])
+            self.__containers.append(container_copy)
+            self.add(container_copy)
+            self.add(self.__delimiter.copy())
+
+        self.__rearrange = True
+        return self
+
+    def __add__(self, rhs: Union[Iterable, LinearCollection]):
+        self_copy = copy.copy(self)
+        self_copy += rhs
         return self_copy
+
+    def __imul__(self, rhs: SupportsIndex):
+        if type(rhs) is not int:
+            raise NotImplementedError(
+                "unsupported operand type(s) for *: 'LinearCollection' and '{}'".format(
+                    type(rhs)
+                )
+            )
+
+        self_copy = copy.copy(self)
+        for _ in range(rhs):
+            self += self_copy
+
+        self.__rearrange = True
+        return self
+
+    def __mul__(self, rhs: SupportsIndex):
+        self_copy = copy.copy(self)
+        self_copy *= rhs
+        return self_copy
+
+    def __rmul(self, lhs: SupportsIndex):
+        return self.__mul__(lhs)
