@@ -41,7 +41,7 @@ class LinearCollection(VMobject):
         self.__arrangement = arrangement
 
         for value in data:
-            self.insert(value)
+            self.append(value)
 
         self.updaters.append(LinearCollection.__update)
 
@@ -54,7 +54,7 @@ class LinearCollection(VMobject):
 
     # Python list style methods
     def append(self, value: Any) -> LinearCollection:
-        return self.insert(0, value)
+        return self.insert(len(self), value)
 
     def extend(self, values: Iterable) -> LinearCollection:
         for value in values:
@@ -64,20 +64,24 @@ class LinearCollection(VMobject):
         self.__datas.insert(index, self.__data_template(value))
         self.__containers.insert(index, self.__container_template(self.__datas[index]))
         if self.__delimiter is not None:
-            super().insert(index, self.__delimiter.copy())
-        super().insert(index, self.__containers[-1])
+            super().insert(2 * index, self.__delimiter.copy())
+        super().insert(2 * index, self.__containers[-1])
 
         # Flag for rearrangement
         self.__rearrange = True
         return self
 
     def remove(self, value: Any) -> LinearCollection:
-        # TODO #
+        index = self.index(value)
+        self.pop(index)
         self.__rearrange = True
         return self
 
     def pop(self, index=-1) -> Any:
-        # TODO #
+        self.__datas.pop(index)
+        self.__containers.pop(index)
+        self.submobjects.pop(2 * index)
+        self.submobjects.pop(2 * index)
         self.__rearrange = True
         pass
 
@@ -89,20 +93,26 @@ class LinearCollection(VMobject):
         return self
 
     def index(self, value: Any, start=0, end=None) -> int:
-        # TODO #
-        pass
+        for i, data in self.__datas[start:end]:
+            if data.get_value() == value:
+                return i
 
     def count(self, value: Any) -> int:
-        # TODO #
-        pass
+        count = 0
+        for i, data in self.__datas:
+            if data.get_value() == value:
+                count += 1
+        return count
 
     def sort(self, key=None, reverse=False) -> LinearCollection:
         # TODO #
+        raise NotImplementedError("Sorting is not yet implemented")
         self.__rearrange = True
         return self
 
     def reverse(self) -> LinearCollection:
         # TODO #
+        raise NotImplementedError("Reversing is not yet implemented")
         self.__rearrange = True
         return self
 
@@ -141,7 +151,7 @@ class LinearCollection(VMobject):
 
     # Iteration and indexing proxy to the values of __datas
     def __len__(self) -> int:
-        return self.__datas.__len___()
+        return self.__datas.__len__()
 
     def __getitem__(self, key: SupportsIndex) -> Any:
         # TODO support slicing #
@@ -173,7 +183,7 @@ class LinearCollection(VMobject):
 
     # Concatenation
     def __iadd__(self, rhs: Union[Iterable, LinearCollection]):
-        if isinstance(rhs, LinearCollection):
+        if not isinstance(rhs, LinearCollection):
             raise NotImplementedError(
                 "unsupported operand type(s) for +: 'LinearCollection' and '{}'".format(
                     type(rhs)
@@ -185,7 +195,8 @@ class LinearCollection(VMobject):
             self.__datas.append(container_copy.submobjects[0])
             self.__containers.append(container_copy)
             self.add(container_copy)
-            self.add(self.__delimiter.copy())
+            if self.__delimiter is not None:
+                self.add(self.__delimiter.copy())
 
         self.__rearrange = True
         return self
