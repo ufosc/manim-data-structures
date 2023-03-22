@@ -105,14 +105,27 @@ class LinearCollection(VMobject):
         return count
 
     def sort(self, key=None, reverse=False) -> LinearCollection:
-        # TODO #
-        raise NotImplementedError("Sorting is not yet implemented")
+        self.__datas.sort(key=lambda x: key(x.get_value()), reverse=reverse)
+        self.__containers.sort(
+            key=lambda x: key(x.submobjects[0].get_value()), reverse=reverse
+        )
+        self.submobjects.clear()
+
+        # Rebuild the submobjects list
+        for container in self.__containers:
+            self.submobjects.append(container)
+            if self.__delimiter is not None:
+                self.submobjects.append(self.__delimiter.copy())
+        self.submobjects.pop()
+
         self.__rearrange = True
         return self
 
     def reverse(self) -> LinearCollection:
-        # TODO #
-        raise NotImplementedError("Reversing is not yet implemented")
+        self.__datas.reverse()
+        self.__containers.reverse()
+        self.submobjects.reverse()
+
         self.__rearrange = True
         return self
 
