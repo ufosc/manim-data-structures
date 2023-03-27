@@ -8,9 +8,11 @@ packages = [{include = "manim_data_structures", from = "src"}]
 repository = "https://github.com/ufosc/manim-data-structures"
 documentation = ""
 
+
 [tool.poetry.dependencies]
 python = ">=3.8.0,<3.11"
 manim = ">=0.16.0"
+
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.3.0"
@@ -28,7 +30,6 @@ pytest = "^6.2.5"
 pytest-cov = "^4.0.0"
 
 
-
 [tool.poetry.dev-dependencies.black]
 version = ">=22.10.0"
 allow-prereleases = false
@@ -39,6 +40,7 @@ markers = "platform_python_implementation == 'CPython'"
 [tool.poetry.group.dev-dependencies.dependencies]
 sphinx-autodoc-typehints = "^1.22"
 
+
 [tool.isort]
 # from https://black.readthedocs.io/en/stable/compatible_configs.html
 multi_line_output = 3
@@ -48,13 +50,18 @@ use_parentheses = true
 ensure_newline_before_comments = true
 line_length = 88
 
+
 [tool.poetry.urls]
 "Bug Tracker" = "https://github.com/ufosc/manim-data-structures/issues"
 "Changelog" = "https://github.com/ufosc/manim-data-structures/blob/main/CHANGELOG.md"
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--cov=src --cov-append --cov-report=term --cov-report=html:cov_html --last-failed-no-failures=none"
 
 [tool.poetry.plugins."manim.plugins"]
 "manim_data_structures" = "manim_data_structures"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
