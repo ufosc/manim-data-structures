@@ -9,3 +9,4 @@ generated
 .vscode
 rendering_times.csv
 media/
+.coverage
