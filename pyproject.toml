@@ -16,7 +16,10 @@ manim = ">=0.16.0"
 
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.3.0"
+sphinx-autodoc-typehints = "^1.22"
+sphinxcontrib-programoutput = "^0.18"
 furo = "^2022.9.29"
+recommonmark = "^0.7.1"
 pre-commit = "^2.20.0"
 isort = "5.12.0"
 flake8 = {version = "6.0.0", python = ">=3.8.1,<3.11"}
@@ -29,16 +32,11 @@ flake8-comprehensions = "^3.10.1"
 pytest = "^6.2.5"
 pytest-cov = "^4.0.0"
 
-
 [tool.poetry.dev-dependencies.black]
 version = ">=22.10.0"
 allow-prereleases = false
 python = ">=3.7"
 markers = "platform_python_implementation == 'CPython'"
-
-
-[tool.poetry.group.dev-dependencies.dependencies]
-sphinx-autodoc-typehints = "^1.22"
 
 
 [tool.isort]
@@ -56,11 +54,16 @@ line_length = 88
 "Changelog" = "https://github.com/ufosc/manim-data-structures/blob/main/CHANGELOG.md"
 
 
-[tool.pytest.ini_options]
-addopts = "--cov=src --cov-append --cov-report=term --cov-report=html:cov_html --last-failed-no-failures=none"
-
+[tool.poetry.plugins]
+[tool.poetry.plugins."console_scripts"]
+"manim" = "manim.__main__:main"
+"manimce" = "manim.__main__:main"
 [tool.poetry.plugins."manim.plugins"]
 "manim_data_structures" = "manim_data_structures"
+
+[tool.pytest.ini_options]
+markers = "slow: Mark the test as slow. Can be skipped with --skip_slow"
+addopts = "--cov=src --cov-append --last-failed-no-failures=none --no-cov-on-fail --cov-report html:cov_html --cov-report term"
 
 [build-system]
 requires = ["poetry-core"]
