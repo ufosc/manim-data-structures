@@ -462,3 +462,13 @@ class LinearCollection(
             a shallow copy of this object
         """
         return self.__copy__()
+
+    def __hash__(self) -> int:
+        """Naive hash of the value of the tuple representation.
+
+        Returns
+        -------
+        int
+            a hash
+        """
+        return hash(tuple(self))
