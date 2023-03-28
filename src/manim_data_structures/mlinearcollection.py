@@ -2,16 +2,31 @@ from __future__ import annotations
 
 import copy
 import sys
-from typing import Any, Callable, Generic, Iterable, Self, SupportsIndex, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Callable,
+    Generic,
+    Iterable,
+    SupportsIndex,
+    TypeVar,
+    Union,
+)
 
 import numpy as np
-from _typeshed import SupportsRichComparison, SupportsRichComparisonT
+
+if TYPE_CHECKING:
+    from _typeshed import Self, SupportsRichComparison
+else:
+    Self = Any
+    SupportsRichComparison = Any
+
 from manim import ORIGIN, RIGHT, Integer, Mobject, Square, VMobject
 
 _V = TypeVar("_V")
-_D = TypeVar("_D", Mobject)
-_C = TypeVar("_C", Mobject)
-_Delimiter = TypeVar("_Delimiter", Mobject)
+_D = TypeVar("_D", bound=Mobject)
+_C = TypeVar("_C", bound=Mobject)
+_Delimiter = TypeVar("_Delimiter", bound=Mobject)
 
 
 class LinearCollection(
@@ -224,7 +239,10 @@ class LinearCollection(
         return self
 
     def index(
-        self, __value: _V, __start: SupportsIndex, __stop: SupportsIndex = sys.maxsize
+        self,
+        __value: _V,
+        __start: SupportsIndex = 0,
+        __stop: SupportsIndex = sys.maxsize,
     ) -> int:
         """Finds the first instance of __value and returns its index.
 
@@ -279,12 +297,15 @@ class LinearCollection(
         if len(self) == 0:
             return
 
-        self.__values, self.__datas, self.__containers = zip(
-            *sorted(
-                zip(self.__values, self.__datas, self.__containers),
-                key=(lambda x: key(x[0])),
-                reverse=reverse,
-            )
+        self.__values, self.__datas, self.__containers = map(
+            list,
+            zip(
+                *sorted(
+                    zip(self.__values, self.__datas, self.__containers),
+                    key=(lambda x: key(x[0])),
+                    reverse=reverse,
+                )
+            ),
         )
         self.__rebuild_submobjects()
 

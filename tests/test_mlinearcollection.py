@@ -166,6 +166,7 @@ def test_sort(lc):
     lc_data.sort()
     for lc_value, data_value in zip(lc, lc_data):
         assert lc_value == data_value
+    is_valid(lc)
 
 
 def test_reverse(lc):
@@ -212,7 +213,7 @@ def test_comparisons(lc, lc_data, other_data):
     except TypeError:
         pass
 
-    assert lc == tuple(other_data) is False
+    assert (lc == tuple(other_data)) is False
     assert lc != tuple(other_data)
 
     try:
