@@ -1,65 +1,109 @@
 from __future__ import annotations
 
 import copy
-from typing import Any, Callable, Iterable, List, SupportsIndex, Union
+import sys
+from typing import Any, Callable, Generic, Iterable, Self, SupportsIndex, TypeVar, Union
 
 import numpy as np
+from _typeshed import SupportsRichComparison, SupportsRichComparisonT
 from manim import ORIGIN, RIGHT, Integer, Mobject, Square, VMobject
 
+_V = TypeVar("_V")
+_D = TypeVar("_D", Mobject)
+_C = TypeVar("_C", Mobject)
+_Delimiter = TypeVar("_Delimiter", Mobject)
 
-class LinearCollection(VMobject):
-    """
-    A drop-in replacement for a Python list that supports animating operations.
-    """
 
-    __values: List[Any]
-    __datas: List[Mobject]
-    __containers: List[Mobject]
-    __data_constructor: Callable[[Any], Mobject]
-    __container_constructor: Callable[[], Mobject]
-    __delimiter: Mobject
+class LinearCollection(
+    VMobject,
+    Generic[_V, _D, _C, _Delimiter],
+):
+
+    __values: list[_V]
+    __datas: list[_D]
+    __containers: list[_C]
+    __data_constructor: Callable[[_V], _D]
+    __container_constructor: Callable[[], _C]
+    __delimiter: _Delimiter
     __arrangement: dict
     __rearrange: bool
 
     def __init__(
         self,
-        data: Iterable[Any] = (),
-        data_constructor: Callable[[Any], Mobject] = Integer,
-        container_constructor: Callable[[], Mobject] = Square,
-        delimiter=None,
-        arrangement={"direction": RIGHT, "buff": 0.0},
+        __values: Iterable[_V] = (),
+        __data_constructor: Callable[[_V], _D] = Integer,
+        __container_constructor: Callable[[], _C] = Square,
+        __delimiter: _Delimiter = None,
+        __arrangement={"direction": RIGHT, "buff": 0.0},
         *args,
         **kwargs,
     ):
+        """Constructs a new LinearCollection.
+
+        Parameters
+        ----------
+        __values : Iterable[_V], optional
+            the iterable of values to convert, by default ()
+        __data_constructor : Callable[[_V], _D], optional
+            a callable that converts values to an Mobject representation, by default Integer
+        __container_constructor : Callable[[], _C], optional
+            a callable that constructs a container, by default Square
+        __delimiter : _Delimiter, optional
+            an optional delimiter that is placed between containers, by default None
+        __arrangement : dict, optional
+            a dict of kwargs that is passed to self.arrange, by default {"direction": RIGHT, "buff": 0.0}
+        """
         super().__init__(*args, **kwargs)
 
         self.__values = []
         self.__datas = []
         self.__containers = []
-        self.__data_constructor = data_constructor
-        self.__container_constructor = lambda data: container_constructor().add(
+        self.__data_constructor = __data_constructor
+        self.__container_constructor = lambda data: __container_constructor().add(
             data.move_to(ORIGIN)
         )
-        self.__delimiter = delimiter
-        self.__arrangement = arrangement
+        self.__delimiter = __delimiter
+        self.__arrangement = __arrangement
         self.__rearrange = False
 
-        self.extend(data)
+        self.extend(__values)
 
         self.updaters.append(LinearCollection.__update)
 
     @classmethod
-    def __update(cls, lc: LinearCollection, dt=0):
+    def __update(cls, lc: Self, dt=0):
+        """An updater that is applied to each LinearCollection before every frame.
+
+        Parameters
+        ----------
+        lc : Self
+            the target to format
+        dt : int, optional
+            the time that has passed since the last update, by default 0
+        """
         # Only rearrange if we need to
         if lc.__rearrange:
             lc.arrange(**lc.__arrangement)
             lc.__rearrange = False
 
-    def __submobject_index(self, index):
-        index = index if self.__delimiter is None else 2 * index
-        return index if index >= 0 else index + 1
+    def __submobject_index(self, __index: int) -> int:
+        """Returns the index in submobjects of the given container index.
+
+        Parameters
+        ----------
+        __index : int
+            the external index of the value
+
+        Returns
+        -------
+        int
+            the index of the container in submobjects
+        """
+        __index = __index if self.__delimiter is None else 2 * __index
+        return __index if __index >= 0 else __index + 1
 
     def __rebuild_submobjects(self):
+        """Rebuilds the submobject list to obey the order of self.__containers."""
         self.submobjects.clear()
         for container in self.__containers:
             self.submobjects.append(container)
@@ -70,24 +114,47 @@ class LinearCollection(VMobject):
                 self.submobjects.append(self.__delimiter.copy())
 
         self.__rearrange = True
-        return self
 
     # Python list style methods
-    def append(self, value: Any) -> LinearCollection:
-        return self.insert(len(self), value)
+    def append(self, __value: _V) -> Self:
+        """Appends the value.
 
-    def extend(self, values: Iterable[Any]) -> LinearCollection:
-        for value in values:
+        Parameters
+        ----------
+        __value : _V
+            the value to append
+
+        Returns
+        -------
+        Self
+            a reference to self
+        """
+        return self.insert(len(self), __value)
+
+    def extend(self, __iterable: Iterable[_V]) -> Self:
+        """Appends all items from the iterable.
+
+        Parameters
+        ----------
+        __iterable : Iterable[_V]
+            an iterable of values to append
+
+        Returns
+        -------
+        Self
+            a reference to self
+        """
+        for value in __iterable:
             self.append(value)
 
-    def insert(self, index, value) -> LinearCollection:
-        self.__values.insert(index, value)
-        new_data = self.__data_constructor(value)
-        self.__datas.insert(index, new_data)
+    def insert(self, __index: SupportsIndex, __value: _V) -> Self:
+        self.__values.insert(__index, __value)
+        new_data = self.__data_constructor(__value)
+        self.__datas.insert(__index, new_data)
         new_container = self.__container_constructor(new_data)
-        self.__containers.insert(index, new_container)
+        self.__containers.insert(__index, new_container)
 
-        submobject_index = self.__submobject_index(index)
+        submobject_index = self.__submobject_index(__index.__index__())
         if self.__delimiter is not None and len(self.submobjects) > 0:
             super().insert(submobject_index, self.__delimiter.copy())
         if submobject_index < 0:
@@ -98,21 +165,57 @@ class LinearCollection(VMobject):
         self.__rearrange = True
         return self
 
-    def remove(self, value: Any) -> LinearCollection:
-        index = self.index(value)
+    def remove(self, __value: _V) -> Self:
+        """Removes the first value that is equal to __value.
+
+        Parameters
+        ----------
+        __value : _V
+            the value to remove
+
+        Returns
+        -------
+        Self
+            a reference to self
+        """
+        index = self.index(__value)
         self.__delitem__(index)
 
         self.__rearrange = True
         return self
 
-    def pop(self, index=-1) -> Any:
-        value = self.__values[index]
-        del self[index]
+    def pop(self, __index: SupportsIndex = -1) -> _V:
+        """Removes the value at the given index and returns it.
+
+        Parameters
+        ----------
+        __index : SupportsIndex, optional
+            the index to pop, by default -1
+
+        Returns
+        -------
+        _V
+            the value that was at __index
+
+        Note
+        ----
+        This method does not return a self reference in order to remain consistent with
+        the Python list API.
+        """
+        value = self.__values[__index]
+        del self[__index]
 
         self.__rearrange = True
         return value
 
-    def clear(self) -> LinearCollection:
+    def clear(self) -> Self:
+        """Clears all values from the list.
+
+        Returns
+        -------
+        Self
+            a reference to self
+        """
         self.__values.clear()
         self.__datas.clear()
         self.__containers.clear()
@@ -120,13 +223,59 @@ class LinearCollection(VMobject):
 
         return self
 
-    def index(self, *args) -> int:
-        return self.__values.index(*args)
+    def index(
+        self, __value: _V, __start: SupportsIndex, __stop: SupportsIndex = sys.maxsize
+    ) -> int:
+        """Finds the first instance of __value and returns its index.
 
-    def count(self, value: Any) -> int:
-        return self.__values.count(value)
+        Parameters
+        ----------
+        __value : _V
+            the value to search for
+        __start : SupportsIndex
+            the index to start searching from
+        __stop : SupportsIndex, optional
+            the index to stop searching at, by default sys.maxsize
 
-    def sort(self, key=lambda x: x, reverse=False) -> LinearCollection:
+        Returns
+        -------
+        int
+            the index of __value if it is present (ValueError otherwise)
+        """
+        return self.__values.index(__value, __start, __stop)
+
+    def count(self, __value: _V) -> int:
+        """Counts the number of instances of __value.
+
+        Parameters
+        ----------
+        __value : _V
+            the value to count
+
+        Returns
+        -------
+        int
+            the number of times __value occurred
+        """
+        return self.__values.count(__value)
+
+    def sort(
+        self, key: Callable[[_V], SupportsRichComparison] = lambda x: x, reverse=False
+    ) -> Self:
+        """Sorts the list inplace according to the given key.
+
+        Parameters
+        ----------
+        key : (_V) -> SupportsRichComparison, optional
+            a callable to convert values to a sortable type, by default lambda x: x
+        reverse : bool, optional
+            False for ascending order, True for descending order, by default False
+
+        Returns
+        -------
+        Self
+            a reference to self
+        """
         if len(self) == 0:
             return
 
@@ -141,7 +290,14 @@ class LinearCollection(VMobject):
 
         return self
 
-    def reverse(self) -> LinearCollection:
+    def reverse(self) -> Self:
+        """Reverses the order of element
+
+        Returns
+        -------
+        Self
+            _description_
+        """
         self.__values.reverse()
         self.__datas.reverse()
         self.__containers.reverse()
@@ -221,9 +377,11 @@ class LinearCollection(VMobject):
         if index < 0 or index >= len(self):
             raise IndexError(f"LinearCollection index out of range: {index}")
 
+        # Update submobjects
         submobject_index = self.__submobject_index(index)
         self.submobjects.__delitem__(submobject_index)
         if self.__delimiter is not None and len(self.submobjects) > 0:
+            # Delete last container when delimiting
             if index != -1 and index != len(self) - 1:
                 self.submobjects.__delitem__(submobject_index)
             else:
@@ -271,7 +429,15 @@ class LinearCollection(VMobject):
     def __rmul__(self, lhs: SupportsIndex):
         return self.__mul__(lhs)
 
-    def __copy__(self):
+    # Robust copy required for .animate
+    def __copy__(self) -> Self:
+        """Performs a shallow copy of self.__values and a deepcopy of the graphical components.
+
+        Returns
+        -------
+        Self
+            a copy of this LinearCollection
+        """
         self_copy = super().copy()
         self_copy.__values = self.__values.copy()
         self_copy.__containers = copy.deepcopy(self.__containers)
@@ -287,5 +453,12 @@ class LinearCollection(VMobject):
 
         return self_copy
 
-    def copy(self):
+    def copy(self) -> Self:
+        """Alias for self.__copy__()
+
+        Returns
+        -------
+        Self
+            a shallow copy of this object
+        """
         return self.__copy__()
