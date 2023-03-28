@@ -17,7 +17,6 @@ manim = ">=0.16.0"
 [tool.poetry.dev-dependencies]
 Sphinx = "^5.3.0"
 sphinx-autodoc-typehints = "^1.22"
-sphinxcontrib-programoutput = "^0.18"
 furo = "^2022.9.29"
 recommonmark = "^0.7.1"
 pre-commit = "^2.20.0"
