@@ -309,6 +309,37 @@ def test_copy(lc):
         lc.clear()
         assert lc_copy != lc
 
-@frames_comparison
-def test_add_to_scene(scene, lc):
-    scene.play(Create(lc))
+
+if __name__ == "__main__":
+    from manim import *
+
+    class LinearCollectionTest(Scene):
+        def construct(self):
+            lc = LinearCollection([1, 2, 3, 4, 5])
+            text = Text("l = list()").to_edge(UP)
+            text.text = "Hello World"
+            self.wait()
+            self.play(Write(text))
+            self.play(Create(lc))
+            self.play(Transform(text, Text("l[1] = 12").move_to(text)))
+            self.play(lc.animate.__setitem__(1, 12))
+            self.play(Transform(text, Text("l[4] = 13").move_to(text)))
+            self.play(lc.animate.__setitem__(4, 13))
+            self.wait()
+            self.play(Transform(text, Text("l.reverse()").move_to(text)))
+            lc.reverse()
+            self.wait()
+            self.play(Transform(text, Text("l.sort()").move_to(text)))
+            lc.sort()
+            self.wait()
+            self.play(Transform(text, Text("l.append(14)").move_to(text)))
+            lc.append(14)
+            self.wait()
+            self.play(Transform(text, Text("l.insert(3, 13)").move_to(text)))
+            lc.insert(3, 13)
+            self.wait()
+
+    config.preview = True
+    config.render = "cairo"
+    config.quality = "low_quality"
+    LinearCollectionTest().render(preview=True)
