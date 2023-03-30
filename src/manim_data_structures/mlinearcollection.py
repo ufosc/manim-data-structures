@@ -389,8 +389,14 @@ class LinearCollection(
         self.__values.__setitem__(index, value)
         try:
             self.__datas[index] = (self.__data_constructor(val) for val in value)
+            for data, container in zip(self.__datas[index], self.__containers[index]):
+                data.move_to(container)
+                container.submobjects[0] = data
         except TypeError:
-            self.__datas[index] = self.__data_constructor(value)
+            self.__datas[index] = self.__data_constructor(value).move_to(
+                self.__containers[index]
+            )
+            self.__containers[index].submobjects[0] = self.__datas[index]
 
     def __delitem__(self, index: SupportsIndex) -> None:
         if index < 0:
