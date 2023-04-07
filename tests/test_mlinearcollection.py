@@ -1,4 +1,7 @@
-from manim import Integer, Mobject, Square
+from manim import *
+from manim.utils.testing.frames_comparison import frames_comparison
+
+__module_test__ = "mlinearcollection"
 
 from manim_data_structures import LinearCollection
 
@@ -69,3 +72,9 @@ def test_add():
             assert value == lc1[i]
         else:
             assert value == lc2[i - len(data)]
+
+
+@frames_comparison
+def test_add_to_scene(scene):
+    lc = LinearCollection([i + 1 for i in range(10)])
+    scene.play(Create(lc))
