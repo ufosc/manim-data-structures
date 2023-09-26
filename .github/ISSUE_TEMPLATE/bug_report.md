@@ -65,6 +65,7 @@ PASTE HERE
 
 <details><summary>LaTeX details</summary>
 
+Output of `latex --version`:
 + LaTeX distribution (e.g. TeX Live 2020):
 + Installed LaTeX packages:
 <!-- output of `tlmgr list --only-installed` for TeX Live or a screenshot of the Packages page for MikTeX -->
