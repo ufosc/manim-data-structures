@@ -15,6 +15,7 @@ class Tree(VMobject):
     __layout_config: dict
     __layout_scale: float
     __vertex_type: Callable[..., Mobject]
+
     # __parents: list
     # __children: dict[Hashable, list] = defaultdict(list)
 
@@ -60,20 +61,20 @@ class Tree(VMobject):
         #             self.__graph[v].get_center() + buff_vec,
         #         )
 
-        # def update_edges(graph: Graph):
-        #     """Updates edges of graph"""
-        #     for (u, v), edge in graph.edges.items():
-        #         buff_vec = (
-        #             edge_buff
-        #             * (graph[u].get_center() - graph[v].get_center())
-        #             / np.linalg.norm(graph[u].get_center() - graph[v].get_center())
-        #         )
-        #         edge.put_start_and_end_on(
-        #             graph[u].get_center() - buff_vec, graph[v].get_center() + buff_vec
-        #         )
+        def update_edges(graph: Graph):
+            """Updates edges of graph"""
+            for (u, v), edge in graph.edges.items():
+                buff_vec = (
+                    edge_buff
+                    * (graph[u].get_center() - graph[v].get_center())
+                    / np.linalg.norm(graph[u].get_center() - graph[v].get_center())
+                )
+                edge.put_start_and_end_on(
+                    graph[u].get_center() - buff_vec, graph[v].get_center() + buff_vec
+                )
 
-        # self.__graph.updaters.clear()
-        # self.__graph.updaters.append(update_edges)
+        self.__graph.updaters.clear()
+        self.__graph.updaters.append(update_edges)
         self.add(self.__graph)
 
     # def __setitem__(self, __index: Hashable, __value: Mobject) -> None:
@@ -91,11 +92,32 @@ class Tree(VMobject):
     #         if parent == __index:
     #             self.__graph.add_edges((__index, i))
 
-    # def __insert__(self, value: Any, parent_index: int) -> None:
-    #     __index = len(self.__graph.vertices)
-    #     self.__graph.add_vertices(__index, vertex_mobjects={__index: self.__vertex_type(value)})
-    #     self.__graph.add_edges((parent_index, __index))
-    # self.__graph.change_layout("tree", root_vertex=0, layout_config=self.__layout_config, layout_scale=self.__layout_scale)
+    def __insert__(self, parent_index: int, value: Any) -> None:
+        """Inserts a node into the tree"""
+        self.__graph.add_vertices(
+            len(self.__graph.vertices),
+            vertex_mobjects={len(self.__graph.vertices): self.__vertex_type(value)},
+        )
+        self.__graph.add_edges((parent_index, len(self.__graph.vertices) - 1))
+        self.__graph.change_layout(
+            "tree",
+            root_vertex=0,
+            layout_config=self.__layout_config,
+            layout_scale=self.__layout_scale,
+        )
+        self.__graph.update()
+
+    # def __animate_insert__(self, ):
+    def __remove__(self, index: int) -> None:
+        """Removes a node from the tree"""
+        self.__graph.remove_vertices(index)
+        self.__graph.change_layout(
+            "tree",
+            root_vertex=0,
+            layout_config=self.__layout_config,
+            layout_scale=self.__layout_scale,
+        )
+        self.__graph.update()
 
 
 if __name__ == "__main__":
@@ -105,12 +127,12 @@ if __name__ == "__main__":
             #  make a parent list for a tree
             tree = Tree(list(range(5)), [(0, 1), (0, 2), (1, 3), (1, 4)], Integer)
             self.play(Create(tree))
-            # tree.__insert__(5, 4)
+            # for i in range(5):
+            #     self.wait()
+            #     tree.__insert__(2, i + 5)
+            tree.__remove__(2)
+            self.play(tree.animate)
             self.wait()
-
-            # tree.__insert__(6, 5)
-            # self.wait()
-
             # self.play(tree._Tree__graph.vertices[0].animate.shift(UP * 2))
             # graph.change_layout('tree', root_vertex=0)
             # self.play(Create(graph))
