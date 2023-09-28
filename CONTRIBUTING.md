@@ -21,6 +21,15 @@ To interact with the project, you will need to install some dependencies and con
 8. Install Pre-Commit. `poetry run pre-commit install`
 9. Ensure that the poetry virutal environment is loaded by running `poetry shell` (some IDEs have a setting to do so automatically).
 
+### Branching Strategy
+(to avoid dumb mistakes in the past, some projects ive worked on explain strategies such as naming conventions and stuff like feature branches)
+
+### Coding Guidelines
+(this is a lot less important but if you have style guides or any specific formatting, that can also go here.)
+
+### Testing and Quality Assurance
+(i think there has to be some testing to ensure code quality and also for the data structures to not break. could be wrong since im super new to manim)
+
 ### Fetch the latest code from upstream
 ```bash
 git checkout dev
@@ -30,6 +39,12 @@ git push origin dev
 
 ### Initiate a PR
 Once you have finalized your contribution, navigate to this [link](https://github.com/ufosc/manim-data-structures/pulls) to create a new pull request and submit it.
+
+### Review Process
+(not sure how formal we are but if someone reviews contributions, they can add when and how often it will happen, as well as feedback)
+
+### Acknowledgement
+(i believe everyone should get credit for how much they contributed! very nice open source stuff!)
 
 ### Closing note
 Once your PR is approved, it will be merged into the `dev` branch and we are looking at eventually merging upstream.
