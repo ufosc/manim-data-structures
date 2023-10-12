@@ -30,14 +30,13 @@ class Tree(VMobject):
         **kwargs
     ):
         super().__init__(**kwargs)
-
         vertex_mobjects = {i: vertex_type(v) for i, v in enumerate(vertices)}
         self.__layout_config = layout_config
         self.__layout_scale = len(vertices) * 0.5
         self.__vertex_type = vertex_type
 
         self.__graph = Graph(
-            vertices,
+            list(range(len(vertices))),
             edges,
             vertex_mobjects=vertex_mobjects,
             layout="tree",
@@ -105,7 +104,7 @@ class Tree(VMobject):
             layout_config=self.__layout_config,
             layout_scale=self.__layout_scale,
         )
-        self.__graph.update()
+        # self.__graph.update()
 
     # def __animate_insert__(self, ):
     def __remove__(self, index: int) -> None:
@@ -125,7 +124,7 @@ if __name__ == "__main__":
     class TestScene(Scene):
         def construct(self):
             #  make a parent list for a tree
-            tree = Tree(list(range(5)), [(0, 1), (0, 2), (1, 3), (1, 4)], Integer)
+            tree = Tree([0, 1, 2, 3, 5], [(0, 1), (0, 2), (1, 3), (1, 4)], Integer)
             self.play(Create(tree))
             # for i in range(5):
             #     self.wait()
