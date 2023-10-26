@@ -25,6 +25,7 @@ class Tree(VMobject):
         edges: list[tuple[int, int]],
         vertex_type: Callable[..., Mobject],
         edge_buff=0.4,
+        layout="tree",
         layout_config={"vertex_spacing": (-1, 1)},
         root_vertex=0,
         **kwargs
@@ -39,7 +40,7 @@ class Tree(VMobject):
             list(range(len(vertices))),
             edges,
             vertex_mobjects=vertex_mobjects,
-            layout="tree",
+            layout=layout,
             root_vertex=0,
             layout_config=self.__layout_config,
             layout_scale=len(vertices) * 0.5,
