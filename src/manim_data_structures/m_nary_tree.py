@@ -1,6 +1,10 @@
+from typing import Hashable
 from m_tree import Tree
 from manim import *
 from manim import WHITE, Graph, Mobject, VMobject
+import networkx as nx
+
+
 
 
 class N_ary_tree(Tree):
@@ -14,6 +18,33 @@ class N_ary_tree(Tree):
         root_vertex=0,
         **kwargs
     ):
+        n = num_child
+        def n_ary_layout(
+            T: nx.classes.graph.Graph,
+            root_vertex: Hashable | None,
+            scale: float | tuple | None = 2,
+            vertex_spacing: tuple | None = None,
+            orientation: str = "down",
+        ):
+            if not n:
+                raise ValueError("the n-ary tree layout requires the n parameter")
+            if not nx.is_tree(T):
+                raise ValueError("The tree layout must be used with trees")
+            if root_vertex is None:
+                raise ValueError("The tree layout requires the root_vertex parameter")
+            def calc_pos(i):
+                if n == 1:
+                    return (1, i+1)
+                k=0
+                sum = 0
+                while True:
+                    sum += n**k
+                    if i<sum:
+                        return(i-sum + n**k, k+1)
+                    else:
+                        k += 1
+            return {i: np.array([x, y, 0]) for x,y in (calc_pos(i) for i in T)}
+
         self.num_child = num_child
         height = 1 + int(np.log(len(nary_tree_list) + 1) / np.log(num_child))
         total_vertices = num_child**height - 1
@@ -31,6 +62,7 @@ class N_ary_tree(Tree):
             edges,
             vertex_type,
             edge_buff,
+            n_ary_layout,
             layout_config,
             root_vertex,
             **kwargs
