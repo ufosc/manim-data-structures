@@ -11,7 +11,7 @@ from manim import WHITE, Graph, Mobject, VMobject
 class Tree(VMobject):
     """Computer Science Tree Data Structure"""
 
-    __graph: Graph
+    _graph: Graph
     __layout_config: dict
     __layout_scale: float
     __vertex_type: Callable[..., Mobject]
@@ -36,7 +36,7 @@ class Tree(VMobject):
         self.__layout_scale = len(vertices) * 0.5
         self.__vertex_type = vertex_type
 
-        self.__graph = Graph(
+        self._graph = Graph(
             list(range(len(vertices))),
             edges,
             vertex_mobjects=vertex_mobjects,
@@ -73,9 +73,9 @@ class Tree(VMobject):
                     graph[u].get_center() - buff_vec, graph[v].get_center() + buff_vec
                 )
 
-        self.__graph.updaters.clear()
-        self.__graph.updaters.append(update_edges)
-        self.add(self.__graph)
+        self._graph.updaters.clear()
+        self._graph.updaters.append(update_edges)
+        self.add(self._graph)
 
     # def __setitem__(self, __index: Hashable, __value: Mobject) -> None:
     #     """Sets the value of a node in the tree"""
