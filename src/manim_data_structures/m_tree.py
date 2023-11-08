@@ -21,7 +21,7 @@ class Tree(VMobject):
 
     def __init__(
         self,
-        vertices: list[Any],
+        nodes: dict[int, Any],
         edges: list[tuple[int, int]],
         vertex_type: Callable[..., Mobject],
         edge_buff=0.4,
@@ -31,19 +31,20 @@ class Tree(VMobject):
         **kwargs
     ):
         super().__init__(**kwargs)
-        vertex_mobjects = {i: vertex_type(v) for i, v in enumerate(vertices)}
+        vertex_mobjects = {k: vertex_type(v) for k, v in nodes.items()}
         self.__layout_config = layout_config
-        self.__layout_scale = len(vertices) * 0.5
+        self.__layout_scale = len(nodes) * 0.5
         self.__vertex_type = vertex_type
-
+        print(nodes)
+        print(edges)
         self._graph = Graph(
-            list(range(len(vertices))),
+            list(nodes),
             edges,
             vertex_mobjects=vertex_mobjects,
             layout=layout,
             root_vertex=0,
             layout_config=self.__layout_config,
-            layout_scale=len(vertices) * 0.5,
+            layout_scale=len(nodes) * 0.5,
             edge_config={"stroke_width": 1, "stroke_color": WHITE},
         )
 
@@ -92,32 +93,32 @@ class Tree(VMobject):
     #         if parent == __index:
     #             self.__graph.add_edges((__index, i))
 
-    def __insert__(self, parent_index: int, value: Any) -> None:
-        """Inserts a node into the tree"""
-        self.__graph.add_vertices(
-            len(self.__graph.vertices),
-            vertex_mobjects={len(self.__graph.vertices): self.__vertex_type(value)},
-        )
-        self.__graph.add_edges((parent_index, len(self.__graph.vertices) - 1))
-        self.__graph.change_layout(
-            "tree",
-            root_vertex=0,
-            layout_config=self.__layout_config,
-            layout_scale=self.__layout_scale,
-        )
-        # self.__graph.update()
-
-    # def __animate_insert__(self, ):
-    def __remove__(self, index: int) -> None:
-        """Removes a node from the tree"""
-        self.__graph.remove_vertices(index)
-        self.__graph.change_layout(
-            "tree",
-            root_vertex=0,
-            layout_config=self.__layout_config,
-            layout_scale=self.__layout_scale,
-        )
-        self.__graph.update()
+    # def __insert__(self, parent_index: int, value: Any) -> None:
+    #     """Inserts a node into the tree"""
+    #     self.__graph.add_vertices(
+    #         len(self.__graph.vertices),
+    #         vertex_mobjects={len(self.__graph.vertices): self.__vertex_type(value)},
+    #     )
+    #     self.__graph.add_edges((parent_index, len(self.__graph.vertices) - 1))
+    #     self.__graph.change_layout(
+    #         "tree",
+    #         root_vertex=0,
+    #         layout_config=self.__layout_config,
+    #         layout_scale=self.__layout_scale,
+    #     )
+    #     # self.__graph.update()
+    #
+    # # def __animate_insert__(self, ):
+    # def __remove__(self, index: int) -> None:
+    #     """Removes a node from the tree"""
+    #     self.__graph.remove_vertices(index)
+    #     self.__graph.change_layout(
+    #         "tree",
+    #         root_vertex=0,
+    #         layout_config=self.__layout_config,
+    #         layout_scale=self.__layout_scale,
+    #     )
+    #     self.__graph.update()
 
 
 if __name__ == "__main__":
@@ -125,18 +126,10 @@ if __name__ == "__main__":
     class TestScene(Scene):
         def construct(self):
             #  make a parent list for a tree
-            tree = Tree([0, 1, 2, 3, 5], [(0, 1), (0, 2), (1, 3), (1, 4)], Integer)
+            tree = Tree([0, 1, 2, 3], [(0, 1), (0, 2), (1, 3)], Integer)
             self.play(Create(tree))
-            # for i in range(5):
-            #     self.wait()
-            #     tree.__insert__(2, i + 5)
-            tree.__remove__(2)
             self.play(tree.animate)
             self.wait()
-            # self.play(tree._Tree__graph.vertices[0].animate.shift(UP * 2))
-            # graph.change_layout('tree', root_vertex=0)
-            # self.play(Create(graph))
-            # self.wait()
 
     config.preview = True
     config.renderer = "cairo"
