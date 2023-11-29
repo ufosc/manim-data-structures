@@ -44,6 +44,7 @@ class N_ary_tree(Tree):
     ):
         if layout_config is None:
             layout_config = {"vertex_spacing": (-1, 1)}
+        self.__layout_config = layout_config
         self.num_child = num_child
 
         edges = [(self.get_parent(e), e) for e in nodes if e != 0]
@@ -74,9 +75,21 @@ class N_ary_tree(Tree):
         return int(x + (1 - n**y) // (1 - n))
 
     def get_parent(self, idx):
+        """
+        Returns the index of the parent of the node at the given index
+        """
         x, y = N_ary_tree.calc_loc(idx, self.num_child)
         new_loc = x // self.num_child, y - 1
         return N_ary_tree.calc_idx(new_loc, self.num_child)
+
+    def insert_node(self, node: Any, index: Hashable):
+        """Inserts a node into the graph"""
+        res = super().insert_node(node, (self.get_parent(index), index))
+        dict_layout = _nary_layout(
+            self._graph._graph, n=self.num_child, **self.__layout_config
+        )
+        self._graph.change_layout(dict_layout)
+        return res
 
 
 if __name__ == "__main__":
@@ -85,14 +98,17 @@ if __name__ == "__main__":
         def construct(self):
             #  make a parent list for a tree
             tree = N_ary_tree(
-                {0: 0, 1: 1, 2: 2, 4: 4},
+                {0: 0, 1: 1, 4: 4},
                 num_child=2,
                 vertex_type=Integer,
-                layout_config={"vertex_spacing": (0.75, -1)},
+                layout_config={"vertex_spacing": (1, -1)},
             )
-            tree.shift(UP * 2)
+            tree.insert_node(1, 3)
+            tree.remove_node(4)
+            # tree._graph.change_layout(root_vertex=0, layout_config=tree._Tree__layout_config,
+            #                           layout_scale=tree._Tree__layout_scale)
             self.play(Create(tree))
-            self.play(tree.animate)
+
             self.wait()
 
     config.preview = True
