@@ -1,4 +1,4 @@
-<!-- Thank you for contributing to Manim Data Structures! Learn more about the process in our contributing guidelines: https://github.com/drageelr/manim-data-structures/blob/main/CONTRIBUTING.md -->
+<!-- Thank you for contributing to Manim Data Structures! Learn more about the process in our contributing guidelines: https://github.com/ufosc/manim-data-structures/blob/main/CONTRIBUTING.md -->
 
 ## Overview: What does this pull request change?
 <!-- If there is more information than the PR title that should be added to our release changelog, add it in the following changelog section. This is optional, but recommended for larger pull requests. -->
@@ -18,4 +18,5 @@
 <!-- Thank you again for contributing! Do not modify the lines below, they are for reviewers. -->
 ## Reviewer Checklist
 - [ ] The PR title is descriptive enough for the changelog, and the PR is labeled correctly
+- [ ] If applicable: newly added code segments are adequately covered by tests
 - [ ] If applicable: newly added non-private functions and classes have a docstring including a short summary and a PARAMETERS section
