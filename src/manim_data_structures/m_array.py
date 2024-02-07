@@ -371,6 +371,18 @@ class MArrayElement(VGroup):
             return self.fetch_mob_label()
         else:
             return self
+        
+    def get_body(self) -> Square:
+        return self.fetch_mob_square()
+    
+    def get_value(self) -> Text:
+        return self.fetch_mob_value()
+    
+    def get_index(self) -> Text:
+        return self.fetch_mob_index()
+    
+    def get_label(self) -> Text:
+        return self.fetch_mob_label()
 
     def update_mob_value(
         self,
@@ -2419,7 +2431,7 @@ class MArraySlidingWindow(VGroup):
         self.__mob_label_props.update(mob_label_args)
 
         if type(self.__mob_label_props["text"]) != str:
-            self.__mob_label_props["text"] = str(self.__mob_label_props["text"])
+            self.__mob_label_props["text"] = str(self.__mob_label_props["text"])tree
 
     def __init_mobs(self, init_window: bool = False, init_label: bool = False) -> None:
         """Initializes the mobjects for the class.
