@@ -310,13 +310,13 @@ class MArrayElement(VGroup):
             Mobject of the class.
         """
 
-        if mob_target == MArrayElementComp.BODY:
+        if mob_target == MArrayElementComp.get_body(self):
             return self.fetch_mob_square()
-        elif mob_target == MArrayElementComp.VALUE:
+        elif mob_target == MArrayElementComp.get_value(self):
             return self.fetch_mob_value()
-        elif mob_target == MArrayElementComp.INDEX:
+        elif mob_target == MArrayElementComp.get_index(self):
             return self.fetch_mob_index()
-        elif mob_target == MArrayElementComp.LABEL:
+        elif mob_target == MArrayElementComp.get_label(self):
             return self.fetch_mob_label()
         else:
             return self
@@ -807,7 +807,7 @@ class MArray(VGroup):
         removal_anim_args: dict = {},
         update_anim_args: dict = {},
         removal_anim_target: MArrayElementComp = None,
-        update_anim_target: MArrayElementComp = MArrayElementComp.INDEX,
+        update_anim_target: MArrayElementComp = MArrayElementComp.get_index(self),
     ) -> typing.Tuple[Succession, typing.Callable[[bool], typing.List[Animation]]]:
         """Removes the element from the array at the specified index.
 
@@ -1427,7 +1427,7 @@ class MArray(VGroup):
         removal_anim_args: dict = {},
         update_anim_args: dict = {},
         removal_anim_target: MArrayElementComp = None,
-        update_anim_target: MArrayElementComp = MArrayElementComp.INDEX,
+        update_anim_target: MArrayElementComp = MArrayElementComp.get_index(self),
         play_anim: bool = True,
         play_anim_args: dict = {},
     ) -> typing.Tuple[Succession, typing.Callable[[bool], typing.List[Animation]]]:
