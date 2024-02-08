@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import random
 from collections import defaultdict
 from copy import copy
@@ -31,7 +29,7 @@ class Tree(VMobject):
         layout="tree",
         layout_config={"vertex_spacing": (-1, 1)},
         root_vertex=0,
-        **kwargs,
+        **kwargs
     ):
         super().__init__(**kwargs)
         vertex_mobjects = {k: vertex_type(v) for k, v in nodes.items()}
