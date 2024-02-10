@@ -6,7 +6,7 @@ authors = ["Nikhil Iyer <iyer.h.nikhil@gmail.com>", "Hammad Nasir <hammadn99@gma
 readme = "README.md"
 packages = [{include = "manim_data_structures", from = "src"}]
 repository = "https://github.com/ufosc/manim-data-structures"
-documentation = "https://manim-data-structures.readthedocs.io/en/latest/"
+documentation = "https://docs.manim.community/en/stable/"
 
 [tool.poetry.dependencies]
 python = ">=3.8.0,<3.11"
