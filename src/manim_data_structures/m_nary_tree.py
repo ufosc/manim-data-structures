@@ -98,17 +98,53 @@ if __name__ == "__main__":
         def construct(self):
             #  make a parent list for a tree
             tree = N_ary_tree(
-                {0: 0, 1: 1, 4: 4},
-                num_child=2,
-                vertex_type=Integer,
-                layout_config={"vertex_spacing": (1, -1)},
+                {
+                    0: "*",
+                    1: "O",
+                    2: "P",
+                    3: "E",
+                    4: "N",
+                },
+                num_child=4,
+                vertex_type=Text,
+                layout_config={"vertex_spacing": (0.6, -1)},
             )
-            tree.insert_node(1, 3)
-            tree.remove_node(4)
-            # tree._graph.change_layout(root_vertex=0, layout_config=tree._Tree__layout_config,
-            #                           layout_scale=tree._Tree__layout_scale)
-            self.play(Create(tree))
+            # Construct \
 
+            self.play(Create(tree))
+            self.wait(0.2)
+            # Shift tree up
+            tree.insert_node("A", 5)
+            self.play(tree.animate.shift(2 * UP))
+            self.wait(0.2)
+            # Apply a shaking effect
+            self.play(
+                Rotate(
+                    tree,
+                    angle=PI / 6,
+                    about_point=ORIGIN,
+                    rate_func=linear,
+                    run_time=0.3,
+                )
+            )
+            self.play(
+                Rotate(
+                    tree,
+                    angle=-PI / 3,
+                    about_point=ORIGIN,
+                    rate_func=linear,
+                    run_time=0.5,
+                )
+            )
+            self.play(
+                Rotate(
+                    tree,
+                    angle=PI / 6,
+                    about_point=ORIGIN,
+                    rate_func=linear,
+                    run_time=0.3,
+                )
+            )
             self.wait()
 
     config.preview = True
