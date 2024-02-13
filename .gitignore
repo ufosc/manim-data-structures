@@ -9,6 +9,7 @@ generated
 .vscode
 rendering_times.csv
 media/
-.coverage
 
+venv
+.coverage
 .python-version
