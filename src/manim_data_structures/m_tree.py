@@ -1,6 +1,8 @@
+import operator as op
 import random
 from collections import defaultdict
 from copy import copy
+from functools import partialmethod, reduce
 from typing import Any, Callable, Dict, Hashable, List, Tuple
 
 import numpy as np
@@ -70,10 +72,59 @@ class Tree(VMobject):
             edge[1], vertex_mobjects={edge[1]: self.__vertex_type(node)}
         )
         self._graph.add_edges(edge)
+        return self
+
+    def insert_node2(self, node: Any, edge: tuple[Hashable, Hashable]):
+        """Inserts a node into the graph as (parent, node)"""
+        self._graph.change_layout(
+            self.__layout,
+            layout_scale=self.__layout_scale,
+            layout_config=self.__layout_config,
+            root_vertex=0,
+        )
+        for mob in self.family_members_with_points():
+            if (mob.get_center() == self._graph[edge[1]].get_center()).all():
+                mob.points = mob.points.astype("float")
+        return self
+
+    def insert_node3(self, node: Any, edge: tuple[Hashable, Hashable]):
+        """Inserts a node into the graph as (parent, node)"""
+        self.suspend_updating()
+        self.insert_node(node, edge)
+        # self.resume_updating()
+        self.insert_node2(node, edge)
+
+        return self
 
     def remove_node(self, node: Hashable):
         """Removes a node from the graph"""
         self._graph.remove_vertices(node)
+
+    # def insert_node2(self):
+    #     """Shift by the given vectors.
+    #
+    #     Parameters
+    #     ----------
+    #     vectors
+    #         Vectors to shift by. If multiple vectors are given, they are added
+    #         together.
+    #
+    #     Returns
+    #     -------
+    #     :class:`Mobject`
+    #         ``self``
+    #
+    #     See also
+    #     --------
+    #     :meth:`move_to`
+    #     """
+    #
+    #     total_vector = reduce(op.add, vectors)
+    #     for mob in self.family_members_with_points():
+    #         mob.points = mob.points.astype("float")
+    #         mob.points += total_vector
+    #
+    #     return self
 
 
 if __name__ == "__main__":
@@ -82,9 +133,9 @@ if __name__ == "__main__":
         def construct(self):
             #  make a parent list for a tree
             tree = Tree({0: 0, 1: 1, 2: 2, 3: 3}, [(0, 1), (0, 2), (1, 3)], Integer)
-            tree.insert_node(4, (2, 4))
             self.play(Create(tree))
-            self.play(tree.animate)
+            self.wait()
+            self.play(tree.animate.insert_node3(4, (2, 4)), run_time=0)
             self.wait()
 
     config.preview = True
