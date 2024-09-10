@@ -13,7 +13,7 @@ To interact with the project, you will need to install some dependencies and con
 1. [Install git](https://git-scm.com/)
 2. [Install Manim dependencies](https://docs.manim.community/en/stable/installation.html#installing-manim-locally)
    - Note: You do not need to install Manim itself (Poetry will handle that).
-3. [Install Poetry](https://python-poetry.org/docs/master/#installing-with-the-official-installer)
+3. [Install Poetry](https://python-poetry.org/docs/)
 4. Fork the [project](https://github.com/ufosc/manim-data-structures).
 5. Clone your fork `git clone <my-fork-url>`.
 6. Add the upstream repository. `git remote add upstream https://github.com/ufosc/manim-data-structures/`
