@@ -10,3 +10,5 @@ generated
 rendering_times.csv
 media/
 .coverage
+
+.python-version
