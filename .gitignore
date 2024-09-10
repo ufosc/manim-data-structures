@@ -9,3 +9,5 @@ generated
 .vscode
 rendering_times.csv
 media/
+
+.python-version
