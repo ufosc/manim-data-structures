@@ -580,13 +580,15 @@ class MArray(VGroup):
         Represents the array label.
     """
 
-    __dir_map = [
-        {"arr": UP, "index": RIGHT},
-        {"arr": DOWN, "index": RIGHT},
-        {"arr": RIGHT, "index": UP},
-        {"arr": LEFT, "index": UP},
-    ]
-    """Maps :class:`~.m_enum.MArrayDirection` to :class:`np.ndarray`."""
+    __coor_alias_val = {
+        UP: {"index": RIGHT},
+        DOWN: {"index": RIGHT},
+        RIGHT: {"index": UP},
+        LEFT: {"index": UP},
+    }
+    '''
+    """Maps :class:`np.ndarray` to :class:`np.ndarray`."""
+    '''
 
     def __sum_elem_len(self, index_start: int, index_end: int) -> int:
         """Sums the side_length of all elements' square mobject present in the array between the specified range.
@@ -630,20 +632,21 @@ class MArray(VGroup):
 
         # Label position is parallel to array growth direction
         if np.array_equal(
-            self.__dir_map[self.__arr_label_pos.value]["arr"],
-            self.__dir_map[self.__arr_dir.value]["arr"],
+            # Compares two np.ndarrays
+            self.__arr_label_pos,
+            self.__arr_dir,
         ):
             return (
                 self.__mob_arr[-1].fetch_mob_square(),
-                self.__dir_map[self.__arr_label_pos.value]["arr"],
+                self.__arr_label_pos,
             )
         elif np.array_equal(
-            self.__dir_map[self.__arr_label_pos.value]["arr"],
-            -self.__dir_map[self.__arr_dir.value]["arr"],
+            self.__arr_label_pos,
+            -self.__arr_dir,
         ):
             return (
                 self.__mob_arr[0].fetch_mob_square(),
-                self.__dir_map[self.__arr_label_pos.value]["arr"],
+                self.__arr_label_pos,
             )
 
         # Label position is perpendicular to array growth direction
@@ -659,9 +662,7 @@ class MArray(VGroup):
                 )
             return (
                 self.__mob_arr[middle_index].fetch_mob_square(),
-                self.__dir_map[self.__arr_label_pos.value]["arr"]
-                + self.__dir_map[self.__arr_dir.value]["arr"]
-                * ((len_after - len_before) / 2),
+                self.__arr_label_pos + self.__arr_dir * ((len_after - len_before) / 2),
             )
 
     def __calc_index(self, index: int) -> typing.Union[int, str]:
@@ -698,9 +699,9 @@ class MArray(VGroup):
         """
 
         return (
-            self.__dir_map[self.__arr_dir.value]["index"]
+            self.__coor_alias_val[self.__arr_dir]["index"]
             if not self.__switch_index_pos
-            else self.__dir_map[self.__arr_dir.value]["index"] * -1
+            else self.__coor_alias_val[self.__arr_dir]["index"] * -1
         )
 
     def __calc_label_shift_factor(self, mob: MArrayElement) -> float:
@@ -718,13 +719,13 @@ class MArray(VGroup):
         """
 
         if np.array_equal(
-            self.__dir_map[self.__arr_label_pos.value]["arr"],
-            self.__dir_map[self.__arr_dir.value]["arr"],
+            self.__arr_label_pos,
+            self.__arr_dir,
         ):
             return mob.fetch_mob_square().side_length
         elif not np.array_equal(
-            self.__dir_map[self.__arr_label_pos.value]["arr"],
-            -self.__dir_map[self.__arr_dir.value]["arr"],
+            self.__arr_label_pos,
+            -self.__arr_dir,
         ):
             return mob.fetch_mob_square().side_length / 2
         return 0
@@ -777,7 +778,7 @@ class MArray(VGroup):
                 mob_index_args=mob_index_args,
                 index_pos=self.__calc_index_pos(),
                 next_to_mob=self.__mob_arr[-1] if len(self.__mob_arr) else None,
-                next_to_dir=self.__dir_map[self.__arr_dir.value]["arr"],
+                next_to_dir=self.__arr_dir,
             )
         )
         self.add(self.__mob_arr[-1])
@@ -793,7 +794,7 @@ class MArray(VGroup):
             anim_list.append(
                 ApplyMethod(
                     self.__mob_arr_label.shift,
-                    self.__dir_map[self.__arr_dir.value]["arr"] * label_shift_factor,
+                    self.__arr_dir * label_shift_factor,
                 )
             )
 
@@ -848,10 +849,7 @@ class MArray(VGroup):
             anims_shift.append(
                 ApplyMethod(
                     self.__mob_arr[i].shift,
-                    -(
-                        self.__dir_map[self.__arr_dir.value]["arr"]
-                        * removed_mob.fetch_mob_square().side_length
-                    ),
+                    -(self.__arr_dir * removed_mob.fetch_mob_square().side_length),
                 )
             )
 
@@ -861,7 +859,7 @@ class MArray(VGroup):
             anims_shift.append(
                 ApplyMethod(
                     self.__mob_arr_label.shift,
-                    -self.__dir_map[self.__arr_dir.value]["arr"] * label_shift_factor,
+                    -self.__arr_dir * label_shift_factor,
                 )
             )
 
@@ -919,9 +917,9 @@ class MArray(VGroup):
         index_start: int,
         index_hex_display: bool,
         hide_index: bool,
-        arr_dir: MArrayDirection,
+        arr_dir: np.ndarray,
         switch_index_pos: bool,
-        arr_label_pos: MArrayDirection,
+        arr_label_pos: np.ndarray,
         arr_label_gap: float,
     ) -> None:
         """Initializes the attributes for the class.
@@ -963,9 +961,9 @@ class MArray(VGroup):
         self.__index_start: int = index_start
         self.__index_hex_display: bool = index_hex_display
         self.__hide_index: int = hide_index
-        self.__arr_dir: MArrayDirection = arr_dir
+        self.__arr_dir: np.ndarray = arr_dir
         self.__switch_index_pos: bool = switch_index_pos
-        self.__arr_label_pos: MArrayDirection = arr_label_pos
+        self.__arr_label_pos: np.ndarray = arr_label_pos
         self.__arr_label_gap: float = arr_label_gap
 
     def __update_props(
@@ -1007,8 +1005,7 @@ class MArray(VGroup):
                 )
                 if len(self.__mob_arr) % 2 == 0:
                     self.__mob_arr_label.shift(
-                        -self.__dir_map[self.__arr_dir.value]["arr"]
-                        * (next_to_mob.side_length / 2)
+                        -self.__arr_dir * (next_to_mob.side_length / 2)
                     )
             self.add(self.__mob_arr_label)
 
@@ -1021,9 +1018,9 @@ class MArray(VGroup):
         index_start: int = 0,
         index_hex_display: bool = False,
         hide_index: bool = False,
-        arr_dir: MArrayDirection = MArrayDirection.RIGHT,
+        arr_dir: np.ndarray = RIGHT,
         switch_index_pos: bool = False,
-        arr_label_pos: MArrayDirection = MArrayDirection.LEFT,
+        arr_label_pos: np.ndarray = LEFT,
         arr_label_gap: float = 0.5,
         mob_arr_label_args: dict = {},
         mob_square_args: dict = {},
@@ -1133,13 +1130,12 @@ class MArray(VGroup):
 
         return self.__mob_arr_label
 
-    def fetch_arr_dir(self) -> MArrayDirection:
-        """Fetches the growth direction enum of the array.
+    def fetch_arr_dir(self) -> np.ndarray:
+        """Fetches the growth direction.
 
         Returns
         -------
-        :class:`~.m_enum.MArrayDirection`
-            :attr:`__arr_dir`.
+
         """
 
         return self.__arr_dir
