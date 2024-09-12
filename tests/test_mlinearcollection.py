@@ -279,7 +279,6 @@ def test_add(lc):
         if i < len(lc1):
             assert value == lc1[i]
         else:
-<<<<<<< HEAD
             assert value == lc2[i % len(lc2)]
         assert value == lc[i]
     is_valid(lc)
@@ -309,6 +308,12 @@ def test_copy(lc):
     if len(lc) > 0:
         lc.clear()
         assert lc_copy != lc
+
+
+@frames_comparison
+def test_add_to_scene(scene):
+    lc = LinearCollection([i + 1 for i in range(10)])
+    scene.play(Create(lc))
 
 
 if __name__ == "__main__":
@@ -344,12 +349,3 @@ if __name__ == "__main__":
     config.render = "cairo"
     config.quality = "low_quality"
     LinearCollectionTest().render(preview=True)
-=======
-            assert value == lc2[i - len(data)]
-
-
-@frames_comparison
-def test_add_to_scene(scene):
-    lc = LinearCollection([i + 1 for i in range(10)])
-    scene.play(Create(lc))
->>>>>>> a2036ec (setup frame testing)
