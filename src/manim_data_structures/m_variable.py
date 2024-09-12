@@ -2,6 +2,7 @@
 
 from manim import *
 
+import typing
 from .m_array import MArrayElement
 
 
@@ -31,7 +32,7 @@ class MVariable(MArrayElement):
 
     Attributes
     ----------
-    __value : Any
+    __value : typing.Any
         The value of the variable.
     __index : :data:`~typing.Union`\0[:class:`str`, :class:`int`]
         The value of the index.
@@ -42,7 +43,7 @@ class MVariable(MArrayElement):
     def __init__(
         self,
         scene: Scene,
-        value: Any = "",
+        value: typing.Any = "",
         index: typing.Union[str, int] = "",
         label: str = "",
         mob_body_args: dict = {},
@@ -75,7 +76,7 @@ class MVariable(MArrayElement):
             Forwarded to constructor of the parent.
         """
 
-        self.__value: Any = value
+        self.__value: typing.Any = value
         self.__index: typing.Union[str, int] = index
         self.__label: str = label
 
@@ -92,12 +93,12 @@ class MVariable(MArrayElement):
             **kwargs
         )
 
-    def fetch_value(self) -> Any:
+    def fetch_value(self) -> typing.Any:
         """Fetches the value of the variable.
 
         Returns
         -------
-        Any
+        typing.Any
             :attr:`__value`.
         """
 
@@ -127,7 +128,7 @@ class MVariable(MArrayElement):
 
     def update_value(
         self,
-        value: Any,
+        value: typing.Any,
         mob_value_args: dict = {},
         update_anim: Animation = Indicate,
         update_anim_args: dict = {},

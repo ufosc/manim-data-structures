@@ -1,9 +1,10 @@
 """Contains classes to construct an array."""
-
-from copy import deepcopy
-
-import numpy as np
+# Import * first so subsequent imports work
 from manim import *
+
+import typing
+import numpy as np
+from copy import deepcopy
 
 from . import utils
 from .m_enum import MArrayDirection, MArrayElementComp
@@ -1091,7 +1092,7 @@ class MArray(VGroup):
         self.__mob_elem_value_props: dict = {}
         self.__mob_elem_index_props: dict = {}
         self.__scene: Scene = scene
-        self.__arr: typing.List[Any] = arr
+        self.__arr: typing.List[typing.Any] = arr
         self.__label: str = label
         self.__mob_arr: typing.List[MArrayElement] = []
         self.__index_offset: int = index_offset
@@ -1506,7 +1507,7 @@ class MArray(VGroup):
 
     def append_elem(
         self,
-        value: Any,
+        value: typing.Any,
         append_anim: Animation = Write,
         append_anim_args: dict = {},
         append_anim_target: MArrayElementComp = None,
