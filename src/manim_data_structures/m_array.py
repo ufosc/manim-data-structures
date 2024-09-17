@@ -371,6 +371,18 @@ class MArrayElement(VGroup):
             return self.fetch_mob_label()
         else:
             return self
+        
+    def get_body(self) -> Square:
+        return self.fetch_mob_square()
+    
+    def get_value(self) -> Text:
+        return self.fetch_mob_value()
+    
+    def get_index(self) -> Text:
+        return self.fetch_mob_index()
+    
+    def get_label(self) -> Text:
+        return self.fetch_mob_label()
 
     def update_mob_value(
         self,
