@@ -2431,7 +2431,7 @@ class MArraySlidingWindow(VGroup):
         self.__mob_label_props.update(mob_label_args)
 
         if type(self.__mob_label_props["text"]) != str:
-            self.__mob_label_props["text"] = str(self.__mob_label_props["text"])tree
+            self.__mob_label_props["text"] = str(self.__mob_label_props["text"])
 
     def __init_mobs(self, init_window: bool = False, init_label: bool = False) -> None:
         """Initializes the mobjects for the class.
