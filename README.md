@@ -37,6 +37,33 @@ The goal is to produce a [Manim Plugin](https://www.manim.community/en/stable/pl
 ## Contributing
 For information on how to contribute to this project, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
+## Installation Instructions
+To install the project and its dependencies, follow these steps:
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/your-repo-link.git
+2. Navigate to the project directory:
+    cd your-project-directory
+3. Install the required dependencies using pip:
+   pip install -r requirements.txt
+
+Once installed, you can run the project by executing the following command:
+python mlinearcollection.py
+
+For detailed usage examples, refer to the following sections in the documentation:
+-Arrays
+-Variables
+
+## Building the Documentation
+This project uses Sphinx for generating its documentation. To generate the HTML documentation locally, follow these steps:
+
+1. Navigate to the docs directory:
+   cd docs
+2. Build the documentation using the Makefile:
+   make html
+3. The documentation will be available at _build/html/index.html. Open it in a web browser to view the project documentation.
+
+
 ## Resources Links
 - [Getting Started](https://docs.manim.community/en/stable/installation.html)
 - [Official Manim Community Documentation](https://docs.manim.community/en/stable/)

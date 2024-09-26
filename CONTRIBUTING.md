@@ -31,6 +31,23 @@ git push origin dev
 ### Initiate a PR
 Once you have finalized your contribution, navigate to this [link](https://github.com/ufosc/manim-data-structures/pulls) to create a new pull request and submit it.
 
+## Contributing to Documentation
+We welcome contributions to improve the project's documentation. To contribute, follow these steps:
+
+Edit or add new .rst files in the docs directory as needed.
+   1. To preview your changes, generate the documentation using the following command:
+   2. make html
+   3. Review the generated HTML in _build/html/index.html to ensure the documentation is
+      formatted correctly.
+   4. Submit a pull request with a description of the changes made.
+
+## Coding Standards
+Please ensure that your code follows our style guidelines. We use flake8 for linting. To run linting checks, use:
+
+flake8 your-code-file.py
+
+All code contributions should pass the linting checks before submitting a pull request.
+
 ### Closing note
 Once your PR is approved, it will be merged into the `dev` branch and we are looking at eventually merging upstream.
 
