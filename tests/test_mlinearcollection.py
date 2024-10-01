@@ -1,8 +1,6 @@
-import pytest
 from manim import *
+import pytest
 from manim.utils.testing.frames_comparison import frames_comparison
-
-__module_test__ = "mlinearcollection"
 
 from manim_data_structures import LinearCollection
 
