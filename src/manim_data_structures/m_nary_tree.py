@@ -11,6 +11,19 @@ def _nary_layout(
     vertex_spacing: tuple | None = None,
     n: int | None = None,
 ):
+    """
+    Calculates the positions of nodes in an N-ary tree layout, scaling coordinates according to the given vertex spacing
+
+    Parameters:
+
+    T (nx.classes.graph.Graph) The input graph
+    vertex_spacing (tuple): Specifies the horizontal and vertical spacing between nodes.
+    n (int): Number of children each node can have
+    Returns:
+
+    dict [int, np.ndarray]: Maps each node index to its 3D coordinates as a numpy array.
+    """
+
     if not n:
         raise ValueError("the n-ary tree layout requires the n parameter")
     if not nx.is_tree(T):
@@ -21,6 +34,14 @@ def _nary_layout(
     def calc_pos(x, y):
         """
         Scales the coordinates to the desired spacing
+
+        Parameters:
+
+        x (int): Horizontal position of the node in the tree
+        y (int): Vertical position of the node in the tree
+        Returns:
+
+        tuple [float, float]: Contains the 2D coordinates of the node
         """
         return (x - (n**y - 1) / 2) * vertex_spacing[0] * n ** (
             max_height - y
@@ -42,6 +63,23 @@ class N_ary_tree(Tree):
         layout_config=None,
         **kwargs
     ):
+        """
+        Represents an N-ary tree, extending the Tree class
+
+        Parameters:
+
+        nodes (dict[int, Any]): Contains node IDs and their data
+        num_child (int): The number of children each node can have
+        vertex_type (Callable[..., Mobject]): The type of vertex object to be used
+        edge_buff (float): Buffer for spacing between edges and nodes
+        layout_config (dict[str, tuple[float, float]]): Specifies layout options, such as vertex spacing
+        **kwargs: Additional arguments passed to the parent Tree class
+
+        Returns:
+
+        None
+        """
+
         if layout_config is None:
             layout_config = {"vertex_spacing": (-1, 1)}
         self.__layout_config = layout_config
@@ -56,6 +94,14 @@ class N_ary_tree(Tree):
     def calc_loc(i, n):
         """
         Calculates the coordinates in terms of the shifted level order x position and level height
+
+        Parameters:
+
+        i (int): Index of the given node
+        n (int): Number of children each node can have
+        Returns:
+
+        tuple [int, int]: Represents the node's x-position and height in the tree
         """
         if n == 1:
             return 1, i + 1
@@ -67,6 +113,14 @@ class N_ary_tree(Tree):
     def calc_idx(loc, n):
         """
         Calculates the index from the coordinates
+
+        Parameters:
+
+        loc (tuple [int, int]): Contains the (x, y) coordinates of the node
+        n (int): Number of children each node can have.
+        Returns:
+
+        int: Index of the node corresponding to the given coordinates
         """
         x, y = loc
         if n == 1:
@@ -77,13 +131,30 @@ class N_ary_tree(Tree):
     def get_parent(self, idx):
         """
         Returns the index of the parent of the node at the given index
+
+        Parameters:
+
+        idx (int): Index of the given node
+        Returns:
+
+        int: Index of the parent node
         """
         x, y = N_ary_tree.calc_loc(idx, self.num_child)
         new_loc = x // self.num_child, y - 1
         return N_ary_tree.calc_idx(new_loc, self.num_child)
 
     def insert_node(self, node: Any, index: Hashable):
-        """Inserts a node into the graph"""
+        """
+        Inserts a node into the graph
+
+        Parameters:
+
+        node (Any): The data of the node to insert
+        index (Hashable): The index where the node is to be inserted
+        Returns:
+
+        Any: The result of the insertion process from the Tree superclass.
+        """
         res = super().insert_node(node, (self.get_parent(index), index))
         dict_layout = _nary_layout(
             self._graph._graph, n=self.num_child, **self.__layout_config
