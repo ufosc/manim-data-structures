@@ -11,7 +11,7 @@ from .m_enum import MArrayDirection, MArrayElementComp
 
 
 @utils.exclude_from_deepcopy("_MArrayElement__scene")
-class MArrayElement(VGroup):
+class MArrayElement(VMobject):
     """A class that represents an array element.
 
     Parameters
@@ -644,7 +644,7 @@ class MArrayElement(VGroup):
 
 
 @utils.exclude_from_deepcopy("_MArray__scene")
-class MArray(VGroup):
+class MArray(VMobject):
     """A class that represents an array.
 
     Parameters
@@ -1688,10 +1688,10 @@ class MArray(VGroup):
 
         anim: CyclicReplace = None
         if swap_body:
-            group_1 = VGroup(
+            group_1 = VMobject(
                 swap_elem_1.fetch_mob_body(), swap_elem_1.fetch_mob_value()
             )
-            group_2 = VGroup(
+            group_2 = VMobject(
                 swap_elem_2.fetch_mob_body(), swap_elem_2.fetch_mob_value()
             )
             anim = CyclicReplace(group_1, group_2, remover=True)
@@ -1725,7 +1725,7 @@ class MArray(VGroup):
 
 
 @utils.exclude_from_deepcopy("_MArrayPointer__scene", "_MArrayPointer__arr")
-class MArrayPointer(VGroup):
+class MArrayPointer(VMobject):
     """A class that represents a pointer.
 
     Parameters
@@ -2190,7 +2190,7 @@ class MArrayPointer(VGroup):
 
 
 @utils.exclude_from_deepcopy("_MArraySlidingWindow__scene", "_MArraySlidingWindow__arr")
-class MArraySlidingWindow(VGroup):
+class MArraySlidingWindow(VMobject):
     """A class that represents a sliding window
 
     Parameters
